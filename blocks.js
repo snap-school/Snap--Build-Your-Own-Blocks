@@ -1880,6 +1880,7 @@ BlockMorph.prototype.init = function () {
         else{
             BlockMorph.uber.show.call(this);
             this.acceptsDrops = true;
+            this.fixLayout();
         }
     }
 };
