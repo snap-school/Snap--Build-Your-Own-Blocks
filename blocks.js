@@ -2035,6 +2035,14 @@ BlockMorph.prototype.userMenu = function () {
     }
 
     menu.addItem(
+        "hide", 
+        function(){
+            this.hide();
+        }
+    );
+
+
+    menu.addItem(
         "duplicate",
         function () {
             this.fullCopy().pickUp(world);
