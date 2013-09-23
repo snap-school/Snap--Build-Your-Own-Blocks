@@ -688,6 +688,10 @@ IDE_Morph.prototype.createControlBar = function () {
     // button.hint = 'cloud operations';
     button.fixLayout();
     cloudButton = button;
+    //TODO Gaetan a voir
+    if(world.isStudentMorph == true){
+        cloudButton.isVisible = false;
+    }
     this.controlBar.add(cloudButton);
     this.controlBar.cloudButton = cloudButton; // for menu positioning
 
@@ -2030,6 +2034,11 @@ IDE_Morph.prototype.cloudMenu = function () {
             null,
             new Color(100, 0, 0)
         );
+    }
+    //TODO gaetan
+    if(world.isStudentMorph == true)
+    {
+        //hide(menu);
     }
     menu.popup(world, pos);
 };
