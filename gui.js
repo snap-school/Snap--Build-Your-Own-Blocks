@@ -271,6 +271,7 @@ IDE_Morph.prototype.openIn = function (world) {
         }
     };
 
+
     this.reactToWorldResize(world.bounds);
 
     function getURL(url) {
