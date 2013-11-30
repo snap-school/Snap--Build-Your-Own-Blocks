@@ -2405,23 +2405,6 @@ IDE_Morph.prototype.projectMenu = function () {
             },
             'Select categories of additional blocks to add to this project.'
         );
-
-        //hidding some useless menu for student.
-        if (this.world().role != 0) {
-            menu.addLine();
-        }
-        menu.addItem(
-            'Import tools',
-            function () {
-                myself.droppedText(
-                    myself.getURL(
-                        'http://snap.berkeley.edu/snapsource/tools.xml'
-                    ),
-                    'tools'
-                );
-            },
-            'load the official library of\npowerful blocks'
-        );
     menu.popup(world, pos);
 };
 
