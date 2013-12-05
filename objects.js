@@ -124,7 +124,7 @@ PrototypeHatBlockMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.objects = '2013-November-15';
+modules.objects = '2013-December-04';
 
 var SpriteMorph;
 var StageMorph;
@@ -4059,6 +4059,9 @@ StageMorph.prototype.processKeyEvent = function (event, action) {
     switch (event.keyCode) {
     case 13:
         keyName = 'enter';
+        if (event.ctrlKey || event.metaKey) {
+            keyName = 'ctrl enter';
+        }
         break;
     case 27:
         keyName = 'esc';
@@ -4091,7 +4094,7 @@ StageMorph.prototype.fireKeyEvent = function (key) {
         myself = this;
 
     this.keysPressed[evt] = true;
-    if (evt === 'enter') {
+    if (evt === 'ctrl enter') {
         return this.fireGreenFlagEvent();
     }
     if (evt === 'esc') {
