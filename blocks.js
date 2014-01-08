@@ -6362,6 +6362,8 @@ InputSlotMorph.prototype.dropDownMenu = function () {
         if (Object.prototype.hasOwnProperty.call(choices, key)) {
             if (key[0] === '~') {
                 menu.addLine();
+            // } else if (key.indexOf('§_def') === 0) {
+            //     menu.addItem(choices[key].blockInstance(), choices[key]);
             } else {
                 menu.addItem(key, choices[key]);
             }
@@ -6510,6 +6512,11 @@ InputSlotMorph.prototype.clonablesMenu = function () {
             dict[name] = name;
         });
     }
+    /*
+    obj.customBlocks.forEach(function (def, i) {
+        dict['§_def' + i] = def
+    });
+    */
     return dict;
 };
 
