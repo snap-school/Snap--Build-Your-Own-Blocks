@@ -6876,6 +6876,82 @@ MenuMorph.prototype.popUpCenteredInWorld = function (world) {
     );
 };
 
+// TextDOM /////////////////////////////////////////////////////////////
+
+function TextDOM(stringMorf) {
+    this.init(stringMorf);
+}
+
+// TextDOM instance creation:
+TextDOM.prototype.init = function (stringMorf) {
+    this.stringMorf = stringMorf;
+
+    // create some nodes
+    this.hiddenDOM = document.createElement('div');
+    var textsNode = document.createElement('div');
+    this.hiddenDOM.appendChild(textsNode);
+    var textNode = document.createTextNode(stringMorf.text);
+    textsNode.appendChild(textNode);
+
+    /* //TODO remove
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (stringMorf.text !== mutation.target.textContent) {
+                stringMorf.text = mutation.target.textContent;
+                console.log(stringMorf.text); //TODO remove
+
+                stringMorf.changed();
+                //stringMorf.drawNew();
+                stringMorf.changed();
+            }
+        });
+    });
+    observer.observe(this.hiddenDOM, {childList: true, characterData: true});*/
+
+    var myself = this;
+    function updateStringMorf(mutation) {
+        var text = "";
+        var textsNode = mutation.target.childNodes;
+        for (var i = 0; i < textsNode.length; i++) {
+            console.log("nodes"+i+" "+textsNode[i].textContent);
+            text = text + textsNode[i].textContent;
+        };
+        if (myself.stringMorf.text !== text) {
+            myself.stringMorf.text = text;
+            console.log("updated " + text);//TODO remove
+
+            myself.stringMorf.changed();
+            //myself.stringMorf.drawNew();
+            myself.stringMorf.changed();
+        }
+    };
+
+    this.hiddenDOM.addEventListener("DOMNodeInserted", updateStringMorf, false);
+
+    this.hiddenDOMInserted = false;
+    this.update();
+}
+
+TextDOM.prototype.update = function () {
+    // update DOM
+    this.hiddenDOM.style = "position:absolute;"
+                            + "top:" + this.stringMorf.visibleBounds().top() + "px;"
+                            + "left:" + this.stringMorf.visibleBounds().left() + "px;"
+                            + "width:" + this.stringMorf.width + "px;"
+                            + "height:" + fontHeight(this.stringMorf.fontSize) + "px;";
+
+    if (document.body && !this.hiddenDOMInserted) {
+        document.getElementById("texts-DOM").appendChild(this.hiddenDOM);
+        console.log("added " + this.stringMorf.text);
+        this.hiddenDOMInserted = true;
+    }
+}
+
+TextDOM.prototype.destroy = function () {
+    console.log("destroyed " + this.stringMorf.text);
+    document.getElementById("texts-DOM").removeChild(this.hiddenDOM);
+}
+
 // StringMorph /////////////////////////////////////////////////////////
 
 // I am a single line of text
@@ -6949,6 +7025,9 @@ StringMorph.prototype.init = function (
     this.markedTextColor = new Color(255, 255, 255);
     this.markedBackgoundColor = new Color(60, 60, 120);
 
+    // Text on DOM
+    this.textDOM = new TextDOM(this);
+
     // initialize inherited properties:
     StringMorph.uber.init.call(this);
 
@@ -6957,6 +7036,11 @@ StringMorph.prototype.init = function (
     this.noticesTransparentClick = true;
     this.drawNew();
 };
+
+StringMorph.prototype.destroy = function () {
+    this.textDOM.destroy();
+    StringMorph.uber.destroy.call(this);
+}
 
 StringMorph.prototype.toString = function () {
     // e.g. 'a StringMorph("Hello World")'
@@ -7051,6 +7135,9 @@ StringMorph.prototype.drawNew = function () {
         context.fillStyle = this.markedTextColor.toString();
         context.fillText(c, p.x + x, fontHeight(this.fontSize) + y);
     }
+
+    // update DOM
+    this.textDOM.update();
 
     // notify my parent of layout change
     if (this.parent) {

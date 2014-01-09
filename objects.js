@@ -1430,7 +1430,7 @@ SpriteMorph.prototype.blockForSelector = function (selector, setDefaults) {
             inputs[0].defaults = defaults;
         } else {
             for (i = 0; i < inputs.length; i += 1) {
-                if (defaults[i] !== null) {
+                if (defaults[i] !== null && inputs[i].setContents) {
                     inputs[i].setContents(defaults[i]);
                 }
             }
