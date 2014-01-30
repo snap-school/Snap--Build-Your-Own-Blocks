@@ -743,7 +743,7 @@ IDE_Morph.prototype.createControlBar = function () {
         } else {
             projectButton.setRight(settingsButton.left() - padding);
         }
-        
+
 
         this.updateLabel();
     };
@@ -1925,7 +1925,7 @@ IDE_Morph.prototype.snapMenu = function () {
 };
 
 IDE_Morph.prototype.cloudMenu = function () {
-    if (this.world().role != 0) { 
+    if (this.world().role != 0) {
         //hidding cloud menu for student
         var menu,
             myself = this,
@@ -2783,13 +2783,17 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
     }
 };
 IDE_Morph.prototype.exportProjectToServer = function () {
-    var menu, str;
-    
-    function getURL(url, jsondata) {
+var menu, str, jsonData, url;
+
+    function putURL(url, jsondata) {
         try {
-            var request = new XMLHttpRequest();
+            var request = new XMLHttpRequest({responseType: "json"});
             request.open('PUT', url, true);
-            request.send("data="+ encodeURIComponent(JSON.stringify(jsondata)));
+            var token = document.getElementsByName("authenticity_token").item(0).value;
+            request.setRequestHeader("X-CSRF-Token", token);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.setRequestHeader("Accept", "application/json")
+            request.send(JSON.stringify(jsondata));
             if (request.status === 200) {
                 return request.responseText;
             }
@@ -2799,12 +2803,10 @@ IDE_Morph.prototype.exportProjectToServer = function () {
         }
     }
     try {
-        str = encodeURIComponent(
-            this.serializer.serialize(this.stage)
-        );
-        url = document.location.host + document.location.pathname;
-        jsonData = {source_code: str };
-        getURL(url, jsonData);
+        str = this.serializer.serialize(this.stage);
+        url = "http://"+document.location.host + document.location.pathname;
+        jsonData = {program:{source_code: str }};
+        putURL(url, jsonData);
         this.showMessage('Exported!', 1);
     } catch (err) {
         this.showMessage('Export failed: ' + err);
@@ -2929,7 +2931,7 @@ IDE_Morph.prototype.openBlocksString = function (str, name, silently) {
         function () {
             msg.destroy();
         }
-    ]); 
+    ]);
 };
 
 IDE_Morph.prototype.rawOpenBlocksString = function (str, name, silently) {
