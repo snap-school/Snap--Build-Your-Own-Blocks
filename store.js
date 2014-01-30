@@ -905,7 +905,11 @@ SnapSerializer.prototype.loadBlock = function (model, isReporter) {
     // private
     var block, info, inputs, isGlobal, rm, receiver;
 <<<<<<< HEAD
+<<<<<<< HEAD
     var isVisible = "true";
+=======
+    var isVisible = true;
+>>>>>>> hide blocks and scripts
 =======
     var isVisible = true;
 >>>>>>> hide blocks and scripts
