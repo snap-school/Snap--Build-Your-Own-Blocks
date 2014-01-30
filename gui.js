@@ -2353,6 +2353,16 @@ IDE_Morph.prototype.projectMenu = function () {
     );
 
     menu.addItem(
+        shiftClicked ?
+            'Save project on server' : 'Save project...',
+        function () {
+            myself.exportProjectToServer();
+        },
+        'save project data as XML\non the server',
+        shiftClicked ? new Color(100, 0, 0) : null
+    )
+
+    menu.addItem(
         'Export blocks...',
         function () {myself.exportGlobalBlocks(); },
         'show global custom block definitions as XML\nin a new browser window'
@@ -2772,6 +2782,34 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
         }
     }
 };
+IDE_Morph.prototype.exportProjectToServer = function () {
+    var menu, str;
+    
+    function getURL(url, jsondata) {
+        try {
+            var request = new XMLHttpRequest();
+            request.open('PUT', url, true);
+            request.send("data="+ encodeURIComponent(JSON.stringify(jsondata)));
+            if (request.status === 200) {
+                return request.responseText;
+            }
+            throw new Error('unable to retrieve ' + url);
+        } catch (err) {
+            return;
+        }
+    }
+    try {
+        str = encodeURIComponent(
+            this.serializer.serialize(this.stage)
+        );
+        url = document.URL.host + document.URL.pathname;
+        jsonData = {source_code: str };
+        getURL(url, jsonData);
+        this.showMessage('Exported!', 1);
+    } catch (err) {
+        this.showMessage('Export failed: ' + err);
+    }
+}
 
 IDE_Morph.prototype.exportGlobalBlocks = function () {
     if (this.stage.globalBlocks.length > 0) {
