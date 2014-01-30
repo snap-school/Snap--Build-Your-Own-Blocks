@@ -2802,7 +2802,7 @@ IDE_Morph.prototype.exportProjectToServer = function () {
         str = encodeURIComponent(
             this.serializer.serialize(this.stage)
         );
-        url = document.URL.host + document.URL.pathname;
+        url = document.location.host + document.location.pathname;
         jsonData = {source_code: str };
         getURL(url, jsonData);
         this.showMessage('Exported!', 1);
