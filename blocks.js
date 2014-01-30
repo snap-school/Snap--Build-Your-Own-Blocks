@@ -1743,6 +1743,7 @@ SyntaxElementMorph.prototype.endLayout = function () {
     %f        - round function slot, unevaluated if replaced,
     %r        - round reporter slot
     %p        - hexagonal predicate slot
+    %visible  - visibility
 
     rings:
 
@@ -1811,6 +1812,8 @@ BlockMorph.prototype.init = function () {
     this.selector = null; // name of method to be triggered
     this.blockSpec = ''; // formal description of label and arguments
     this.comment = null; // optional "sticky" comment morph
+
+    this.hidden = false; // must be hidden
 
     // not to be persisted:
     this.instantiationSpec = null; // spec to set upon fullCopy() of template
@@ -2018,6 +2021,15 @@ BlockMorph.prototype.userMenu = function () {
                 myself.relabel(
                     SpriteMorph.prototype.blockAlternatives[myself.selector]
                 );
+            }
+        );
+    }
+
+    if (world.role != 0) {
+        menu.addItem(
+            "hide", 
+            function(){
+                this.hide();
             }
         );
     }
@@ -4833,6 +4845,16 @@ ScriptsMorph.prototype.userMenu = function () {
             ide = blockEditor.target.parentThatIsA(IDE_Morph);
         }
     }
+
+    menu.addItem(
+        'show all',
+        'showall'
+    );
+    menu.addItem(
+        'hide all',
+        'hideall'
+    );
+    
     menu.addItem('clean up', 'cleanUp', 'arrange scripts\nvertically');
     menu.addItem('add comment', 'addComment');
     if (this.lastDroppedBlock) {
@@ -4879,6 +4901,29 @@ ScriptsMorph.prototype.userMenu = function () {
 };
 
 // ScriptsMorph user menu features:
+
+ScriptsMorph.prototype.showall = function () {
+     this.children.forEach(function (child) {
+         if (child instanceof CommentMorph && child.block) {
+             child.show(); // skip anchored comments
+         }
+         if (child instanceof BlockMorph) {
+             child.show();
+         }
+     });
+ }
+
+ ScriptsMorph.prototype.hideall = function () {
+     this.children.forEach(function (child) {
+         if (child instanceof CommentMorph && child.block) {
+             child.hide(); // skip anchored comments
+         }
+         if (child instanceof BlockMorph) {
+             child.hide();
+         }
+     });
+ }
+
 
 ScriptsMorph.prototype.cleanUp = function () {
     var origin = this.topLeft(),
