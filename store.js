@@ -61,7 +61,7 @@ SyntaxElementMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.store = '2014-January-09';
+modules.store = '2014-February-04';
 
 
 // XML_Serializer ///////////////////////////////////////////////////////
@@ -378,6 +378,8 @@ SnapSerializer.prototype.loadProjectModel = function (xmlNode) {
     }
     project.stage.setTempo(model.stage.attributes.tempo);
     project.stage.setExtent(StageMorph.prototype.dimensions);
+    SpriteMorph.prototype.useFlatLineEnds =
+        model.stage.attributes.lines === 'flat';
     project.stage.isThreadSafe =
         model.stage.attributes.threadsafe === 'true';
     StageMorph.prototype.enableCodeMapping =
@@ -1358,6 +1360,7 @@ StageMorph.prototype.toXML = function (serializer) {
             '<notes>$</notes>' +
             '<thumbnail>$</thumbnail>' +
             '<stage name="@" costume="@" tempo="@" threadsafe="@" ' +
+            'lines="@" ' +
             'codify="@" ' +
             'scheduled="@" ~>' +
             '<pentrails>$</pentrails>' +
@@ -1382,6 +1385,7 @@ StageMorph.prototype.toXML = function (serializer) {
         this.getCostumeIdx(),
         this.getTempo(),
         this.isThreadSafe,
+        SpriteMorph.prototype.useFlatLineEnds ? 'flat' : 'round',
         this.enableCodeMapping,
         StageMorph.prototype.frameRate !== 0,
         this.trailsCanvas.toDataURL('image/png'),

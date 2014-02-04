@@ -2249,6 +2249,109 @@ IDE_Morph.prototype.settingsMenu = function () {
             false
         );
     }
+    addPreference(
+        'Clicking sound',
+        function () {
+            BlockMorph.prototype.toggleSnapSound();
+            if (BlockMorph.prototype.snapSound) {
+                myself.saveSetting('click', true);
+            } else {
+                myself.removeSetting('click');
+            }
+        },
+        BlockMorph.prototype.snapSound,
+        'uncheck to turn\nblock clicking\nsound off',
+        'check to turn\nblock clicking\nsound on'
+    );
+    addPreference(
+        'Animations',
+        function () {myself.isAnimating = !myself.isAnimating; },
+        myself.isAnimating,
+        'uncheck to disable\nIDE animations',
+        'check to enable\nIDE animations',
+        true
+    );
+    addPreference(
+        'Turbo mode',
+        'toggleFastTracking',
+        this.stage.isFastTracked,
+        'uncheck to run scripts\nat normal speed',
+        'check to prioritize\nscript execution'
+    );
+    addPreference(
+        'Rasterize SVGs',
+        function () {
+            MorphicPreferences.rasterizeSVGs =
+                !MorphicPreferences.rasterizeSVGs;
+        },
+        MorphicPreferences.rasterizeSVGs,
+        'uncheck for smooth\nscaling of vector costumes',
+        'check to rasterize\nSVGs on import',
+        true
+    );
+    addPreference(
+        'Flat design',
+        function () {
+            if (MorphicPreferences.isFlat) {
+                return myself.defaultDesign();
+            }
+            myself.flatDesign();
+        },
+        MorphicPreferences.isFlat,
+        'uncheck for default\nGUI design',
+        'check for alternative\nGUI design',
+        false
+    );
+    addPreference(
+        'Sprite Nesting',
+        function () {
+            SpriteMorph.prototype.enableNesting =
+                !SpriteMorph.prototype.enableNesting;
+        },
+        SpriteMorph.prototype.enableNesting,
+        'uncheck to disable\nsprite composition',
+        'check to enable\nsprite composition',
+        true
+    );
+    menu.addLine(); // everything below this line is stored in the project
+    addPreference(
+        'Thread safe scripts',
+        function () {stage.isThreadSafe = !stage.isThreadSafe; },
+        this.stage.isThreadSafe,
+        'uncheck to allow\nscript reentrance',
+        'check to disallow\nscript reentrance'
+    );
+    addPreference(
+        'Prefer smooth animations',
+        'toggleVariableFrameRate',
+        StageMorph.prototype.frameRate,
+        'uncheck for greater speed\nat variable frame rates',
+        'check for smooth, predictable\nanimations across computers'
+    );
+    addPreference(
+        'Flat line ends',
+        function () {
+            SpriteMorph.prototype.useFlatLineEnds =
+                !SpriteMorph.prototype.useFlatLineEnds;
+        },
+        SpriteMorph.prototype.useFlatLineEnds,
+        'uncheck for round ends of lines',
+        'check for flat ends of lines'
+    );
+    addPreference(
+        'Codification support',
+        function () {
+            StageMorph.prototype.enableCodeMapping =
+                !StageMorph.prototype.enableCodeMapping;
+            myself.currentSprite.blocksCache.variables = null;
+            myself.currentSprite.paletteCache.variables = null;
+            myself.refreshPalette();
+        },
+        StageMorph.prototype.enableCodeMapping,
+        'uncheck to disable\nblock to text mapping features',
+        'check for block\nto text mapping features',
+        false
+    );
     menu.popup(world, pos);
 };
 
@@ -2769,6 +2872,7 @@ IDE_Morph.prototype.newProject = function () {
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
     StageMorph.prototype.enableCodeMapping = false;
+    SpriteMorph.prototype.useFlatLineEnds = false;
     this.setProjectName('');
     this.projectNotes = '';
     this.createStage();
