@@ -1626,7 +1626,7 @@ ______
 
 130415
 ------
-* Blocks: place sticky comments on World layer on dragging their anchor block 
+* Blocks: place sticky comments on World layer on dragging their anchor block
 
 130416
 ------
@@ -1704,7 +1704,7 @@ ______
 130514
 ------
 * paint.js: Paint editor, first version, contributed by Kartik Chandra, Yay!!
-* Threads, Objects, Blocks: Broadcast & message enhancements: When I receive <any msg>, and getLastMessage reporter + watcher 
+* Threads, Objects, Blocks: Broadcast & message enhancements: When I receive <any msg>, and getLastMessage reporter + watcher
 
 130515
 ------
@@ -1726,7 +1726,7 @@ ______
 
 130605
 ------
-* Objects: fix for hiding 'getLastAnswer' and 'getTimer' primitives 
+* Objects: fix for hiding 'getLastAnswer' and 'getTimer' primitives
 
 130606
 ------
@@ -1837,7 +1837,7 @@ ______
 130801
 ------
 * Blocks, Threads: "whitespace" & other options in SPLIT reporter's dropdown
-* Blocks: Italicize editable input options (e.g. for the SPLT block) 
+* Blocks: Italicize editable input options (e.g. for the SPLT block)
 * Blocks: Undrop Reporters feature (in script areas' context menus)
 
 130802

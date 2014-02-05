@@ -2326,7 +2326,7 @@ SpriteMorph.prototype.userMenu = function () {
         menu.addItem('help', 'nop');
         return menu;
     }
-    
+
     menu.addItem("duplicate", 'duplicate');
     menu.addItem("delete", 'remove');
     menu.addItem("edit", 'edit');
@@ -5204,7 +5204,7 @@ Costume.prototype.shrinkWrap = function () {
 };
 
 Costume.prototype.boundingBox = function () {
-    // answer the rectangle surrounding my contents' non-transparent pixels 
+    // answer the rectangle surrounding my contents' non-transparent pixels
     var row,
         col,
         pic = this.contents,

@@ -471,7 +471,7 @@ SnapTranslator.dict.fr = {
         'supprime ce clone',
     'pause all':
         'mettre en pause',
-        
+
      // sensing:
     'touching %col ?':
         ' %col touch\u00E9?',
@@ -718,7 +718,7 @@ SnapTranslator.dict.fr = {
     'check for alternative\nGUI design':
         'Cocher pour un style d\interface alternatif',
     'uncheck for default\nGUI design':
-	'D\u00E9cocher pour le style classique d\interface',		
+	'D\u00E9cocher pour le style classique d\interface',
     'Thread safe scripts':
         'Scripts réentrants',
     'check to disallow\nscript reentrance':
@@ -733,7 +733,7 @@ SnapTranslator.dict.fr = {
         'D\u00E9cocher pour une vitesse\nd\'animation maximale (mais variable)',
     'check for smooth, predictable\nanimations across computers':
         'Cocher pour une vitesse d\'animation\nfixe et identique sur tous les ordinateurs',
-	
+
     // inputs
     'with inputs':
         'avec entr\u00E9es',
@@ -958,7 +958,7 @@ SnapTranslator.dict.fr = {
         'tabulations',
     'cr':
         'retours de ligne',
-	
+
   // About Snap
     'About Snap':
         'A propos de Snap',
