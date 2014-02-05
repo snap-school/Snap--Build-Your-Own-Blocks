@@ -2624,8 +2624,34 @@ IDE_Morph.prototype.projectMenu = function () {
         },
         'Select a sound from the media library'
     );
+
     menu.popup(world, pos);
     }
+};
+
+IDE_Morph.prototype.getCostumesList = function (dirname) {
+    var dir,
+        costumes = [];
+
+    dir = this.getURL(dirname);
+    dir.split('\n').forEach(
+        function (line) {
+            var startIdx = line.search(new RegExp('href="[^./?].*"')),
+                endIdx,
+                name;
+
+            if (startIdx > 0) {
+                name = line.substring(startIdx + 6);
+                endIdx = name.search(new RegExp('"'));
+                name = name.substring(0, endIdx);
+                costumes.push(name);
+            }
+        }
+    );
+    costumes.sort(function (x, y) {
+        return x < y ? -1 : 1;
+    });
+    return costumes;
 };
 
 IDE_Morph.prototype.getCostumesList = function (dirname) {
