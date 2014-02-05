@@ -3005,7 +3005,7 @@ var menu, str, jsonData, url;
         try {
             var request = new XMLHttpRequest({responseType: "json"});
             request.open('PUT', url, true);
-            var token = document.getElementsByName("authenticity_token").item(0).value;
+            var token = document.getElementsByName("csrf-token").item(0).content;
             request.setRequestHeader("X-CSRF-Token", token);
             request.setRequestHeader("Content-Type", "application/json");
             request.setRequestHeader("Accept", "application/json")
