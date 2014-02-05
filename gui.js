@@ -171,7 +171,7 @@ IDE_Morph.prototype.setFlatDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
 };
 
-IDE_Morph.prototype.setDefaultDesign();
+window.addLoadEvent(IDE_Morph.prototype.setDefaultDesign);
 
 // IDE_Morph instance creation:
 
