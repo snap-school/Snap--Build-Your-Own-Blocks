@@ -118,7 +118,7 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     ];
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.appModeColor = new Color();
-    IDE_Morph.prototype.scriptsPaneTexture = document.getElementById('snap-texture').src;
+    IDE_Morph.prototype.scriptsPaneTexture = window.getAsset('scriptsPaneTexture.gif');
     IDE_Morph.prototype.padding = 5;
 
     SpriteIconMorph.prototype.labelColor
@@ -409,7 +409,7 @@ IDE_Morph.prototype.createLogo = function () {
     }
 
     this.logo = new Morph();
-    this.logo.texture = document.getElementById('snap-logo').src;
+    this.logo.texture = getAsset('snap_logo_sm.png');
     this.logo.drawNew = function () {
         this.image = newCanvas(this.extent());
         var context = this.image.getContext('2d'),
@@ -1098,7 +1098,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.fixLayout();
     tabBar.add(tab);
 
-    tab = new TabMorph(
+    tab = new TabMorph(//TODO
         tabColors,
         null, // target
         function () {tabBar.tabTo('costumes'); },
@@ -2576,7 +2576,7 @@ IDE_Morph.prototype.projectMenu = function () {
                 );
 
             function loadCostume(name) {
-                var url = dir + '/' + name,
+                var url = window.getAsset(dir + '/' + name),
                     img = new Image();
                 img.onload = function () {
                     var canvas = newCanvas(new Point(img.width, img.height));
@@ -2630,49 +2630,9 @@ IDE_Morph.prototype.projectMenu = function () {
 };
 
 IDE_Morph.prototype.getCostumesList = function (dirname) {
-    var dir,
-        costumes = [];
+    var costumes;
 
-    dir = this.getURL(dirname);
-    dir.split('\n').forEach(
-        function (line) {
-            var startIdx = line.search(new RegExp('href="[^./?].*"')),
-                endIdx,
-                name;
-
-            if (startIdx > 0) {
-                name = line.substring(startIdx + 6);
-                endIdx = name.search(new RegExp('"'));
-                name = name.substring(0, endIdx);
-                costumes.push(name);
-            }
-        }
-    );
-    costumes.sort(function (x, y) {
-        return x < y ? -1 : 1;
-    });
-    return costumes;
-};
-
-IDE_Morph.prototype.getCostumesList = function (dirname) {
-    var dir,
-        costumes = [];
-
-    dir = this.getURL(dirname);
-    dir.split('\n').forEach(
-        function (line) {
-            var startIdx = line.search(new RegExp('href="[^./?].*"')),
-                endIdx,
-                name;
-
-            if (startIdx > 0) {
-                name = line.substring(startIdx + 6);
-                endIdx = name.search(new RegExp('"'));
-                name = name.substring(0, endIdx);
-                costumes.push(name);
-            }
-        }
-    );
+    costumes = window.getAsset(dirname);
     costumes.sort(function (x, y) {
         return x < y ? -1 : 1;
     });
@@ -3542,7 +3502,7 @@ IDE_Morph.prototype.languageMenu = function () {
 
 IDE_Morph.prototype.setLanguage = function (lang, callback) {
     var translation = document.getElementById('language'),
-        src = 'lang-' + lang + '.js',
+        src = window.getAsset('lang-' + lang + '.js'),
         myself = this;
     SnapTranslator.unload();
     if (translation) {
