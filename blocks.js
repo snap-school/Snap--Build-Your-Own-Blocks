@@ -2053,7 +2053,7 @@ BlockMorph.prototype.userMenu = function () {
 
     if (world.role != 0) {
         menu.addItem(
-            "hide", 
+            "hide",
             function(){
                 this.hide();
             }
@@ -2061,7 +2061,7 @@ BlockMorph.prototype.userMenu = function () {
     }
 
     menu.addItem(
-        "hide", 
+        "hide",
         function(){
             this.hide();
         }
@@ -2069,7 +2069,7 @@ BlockMorph.prototype.userMenu = function () {
 
 
     menu.addItem(
-        "hide", 
+        "hide",
         function(){
             this.hide();
         }
@@ -2358,10 +2358,10 @@ BlockMorph.prototype.showHelp = function () {
             block.fullImage()
         );
     } else {
-        pic.src = 'help/' + SnapTranslator.language + '/' + spec + '.png';
+        pic.src = window.getAsset('help/' + SnapTranslator.language + '/' + spec + '.png');
         // Back to English if no picture
         pic.onerror = function () {
-            pic.src = 'help/en/' + spec + '.png';
+            pic.src = window.getAsset('help/en/' + spec + '.png');
         }
     }
 };
@@ -4901,7 +4901,7 @@ ScriptsMorph.prototype.userMenu = function () {
         'hide all',
         'hideall'
     );
-    
+
     menu.addItem('clean up', 'cleanUp', 'arrange scripts\nvertically');
     menu.addItem('add comment', 'addComment');
     if (this.lastDroppedBlock) {
