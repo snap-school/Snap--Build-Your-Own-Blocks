@@ -460,6 +460,7 @@ IDE_Morph.prototype.createControlBar = function () {
         stageSizeButton,
         appModeButton,
         cloudButton,
+        infoMissionButton,
         x,
         colors = [
             this.groupColor,
@@ -672,6 +673,30 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(settingsButton);
     this.controlBar.settingsButton = settingsButton; // for menu positioning
 
+        // infoMissionButton
+    button = new PushButtonMorph(
+        this,
+        'missionMenu',
+        new SymbolMorph('robot', 14)
+        //'\u2699'
+    );
+    button.corner = 12;
+    button.color = colors[0];
+    button.highlightColor = colors[1];
+    button.pressColor = colors[2];
+    button.labelMinExtent = new Point(36, 18);
+    button.padding = 0;
+    button.labelShadowOffset = new Point(-1, -1);
+    button.labelShadowColor = colors[1];
+    button.labelColor = this.buttonLabelColor;
+    button.contrast = this.buttonContrast;
+    button.drawNew();
+    // button.hint = 'edit settings';
+    button.fixLayout();
+    infoMissionButton = button;
+    this.controlBar.add(infoMissionButton);
+    this.controlBar.infoMissionButton = infoMissionButton; // for menu positioning
+
     // cloudButton
     button = new PushButtonMorph(
         this,
@@ -696,6 +721,7 @@ IDE_Morph.prototype.createControlBar = function () {
         this.controlBar.add(cloudButton);
         this.controlBar.cloudButton = cloudButton; // for menu positioning
     }
+
     this.controlBar.fixLayout = function () {
         x = this.right() - padding;
         [stopButton, pauseButton, startButton].forEach(
@@ -718,32 +744,24 @@ IDE_Morph.prototype.createControlBar = function () {
                 x += button.width();
             }
         );
-        // if (this.world().role != 0) {
-        //     [stageSizeButton, appModeButton].forEach(
-        //         function (button) {
-        //             x += padding;
-        //             button.setCenter(myself.controlBar.center());
-        //             button.setLeft(x);
-        //             x += button.width();
-        //         }
-        //     );
-        // }
 
         settingsButton.setCenter(myself.controlBar.center());
         settingsButton.setLeft(this.left());
 
+        infoMissionButton.setCenter(myself.controlBar.center());
+        infoMissionButton.setRight(settingsButton.left() - padding);
+
         //hiding cloud button for student
         if (this.world().role != 0) {
             cloudButton.setCenter(myself.controlBar.center());
-            cloudButton.setRight(settingsButton.left() - padding);
+            cloudButton.setRight(infoMissionButton.left() - padding);
         }
         projectButton.setCenter(myself.controlBar.center());
         if (this.world().role != 0) {
             projectButton.setRight(cloudButton.left() - padding);
         } else {
-            projectButton.setRight(settingsButton.left() - padding);
+            projectButton.setRight(infoMissionButton.left() - padding);
         }
-
 
         this.updateLabel();
     };
@@ -1098,7 +1116,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.fixLayout();
     tabBar.add(tab);
 
-    tab = new TabMorph(//TODO
+    tab = new TabMorph(
         tabColors,
         null, // target
         function () {tabBar.tabTo('costumes'); },
@@ -2355,6 +2373,16 @@ IDE_Morph.prototype.settingsMenu = function () {
     menu.popup(world, pos);
 };
 
+IDE_Morph.prototype.missionMenu = function () {
+    var menu,
+        world = this.world(),
+        pos = this.controlBar.infoMissionButton.bottomLeft();
+
+    menu = new MenuMorph(this);
+    menu.addItem('Description', 'descriptionMission');
+    menu.popup(world, pos);
+};
+
 IDE_Morph.prototype.projectMenu = function () {
     var menu,
         myself = this,
@@ -2640,6 +2668,10 @@ IDE_Morph.prototype.getCostumesList = function (dirname) {
 };
 
 // IDE_Morph menu actions
+
+IDE_Morph.prototype.descriptionMission = function () {
+    jQuery("#missionModal").modal('toggle')
+};
 
 IDE_Morph.prototype.aboutSnap = function () {
     var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations,
@@ -2959,7 +2991,7 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
     }
 };
 IDE_Morph.prototype.exportProjectToServer = function () {
-var menu, str, jsonData, url;
+    var menu, str, jsonData, url;
 
     function putURL(url, jsondata) {
         try {
