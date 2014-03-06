@@ -2380,6 +2380,17 @@ IDE_Morph.prototype.missionMenu = function () {
 
     menu = new MenuMorph(this);
     menu.addItem('Description', 'descriptionMission');
+    menu.addItem(
+        'Save project on server',
+        function () { myself.exportProjectToServer(); }
+    )
+    menu.addItem(
+        'All missions list',
+        function () {
+            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
+        },
+        'Redirection on the list of all missions\nDon\'t forget to save before'
+    )
     menu.popup(world, pos);
 };
 
@@ -2484,16 +2495,6 @@ IDE_Morph.prototype.projectMenu = function () {
         'show project data as XML\nin a new browser window',
         shiftClicked ? new Color(100, 0, 0) : null
     );
-
-    menu.addItem(
-        shiftClicked ?
-            'Save project on server' : 'Save project...',
-        function () {
-            myself.exportProjectToServer();
-        },
-        'save project data as XML\non the server',
-        shiftClicked ? new Color(100, 0, 0) : null
-    )
 
     menu.addItem(
         'Export blocks...',
