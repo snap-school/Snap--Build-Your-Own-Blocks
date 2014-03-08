@@ -1902,7 +1902,7 @@ IDE_Morph.prototype.snapMenu = function () {
             window.open('help/SnapManual.pdf', 'SnapReferenceManual');
         }
     );
-    if(this.world().role != 0) {
+    if(world.role != world.role.STUDENT) {
         //hidding some useless menu for student.
         menu.addItem(
             'Snap! website',
@@ -1943,7 +1943,7 @@ IDE_Morph.prototype.snapMenu = function () {
 };
 
 IDE_Morph.prototype.cloudMenu = function () {
-    if (this.world().role != 0) {
+    if (world.role != world.role.STUDENT) {
         //hidding cloud menu for student
         var menu,
             myself = this,
@@ -2107,7 +2107,7 @@ IDE_Morph.prototype.settingsMenu = function () {
         'userSetBlocksScale'
     );
 
-    if (this.world().role != 0) {
+    if (world.role != world.role.STUDENT) {
         //hidding some useless menu for student
         menu.addLine();
         addPreference(
@@ -2503,7 +2503,7 @@ IDE_Morph.prototype.projectMenu = function () {
     );
 
     // interface clean pour les student
-    if(this.world().role != 0){
+    if(world.role != world.role.STUDENT){
         menu.addLine();
         menu.addItem(
             'Import tools',
