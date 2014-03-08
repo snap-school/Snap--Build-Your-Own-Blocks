@@ -481,7 +481,7 @@ IDE_Morph.prototype.createControlBar = function () {
     };
     this.add(this.controlBar);
 
-    if (this.world.role != 0) {
+    if (world.role != world.role.STUDENT) {
         //hidding for student.
         //smallStageButton
         button = new ToggleButtonMorph(
@@ -716,7 +716,7 @@ IDE_Morph.prototype.createControlBar = function () {
     button.drawNew();
     // button.hint = 'cloud operations';
     button.fixLayout();
-    if (this.world.role != 0) {
+    if (world.role != world.role.STUDENT) {
         cloudButton = button;
         this.controlBar.add(cloudButton);
         this.controlBar.cloudButton = cloudButton; // for menu positioning
@@ -752,12 +752,12 @@ IDE_Morph.prototype.createControlBar = function () {
         infoMissionButton.setRight(settingsButton.left() - padding);
 
         //hiding cloud button for student
-        if (this.world().role != 0) {
+        if (world.role != world.role.STUDENT) {
             cloudButton.setCenter(myself.controlBar.center());
             cloudButton.setRight(infoMissionButton.left() - padding);
         }
         projectButton.setCenter(myself.controlBar.center());
-        if (this.world().role != 0) {
+        if (world.role != world.role.STUDENT) {
             projectButton.setRight(cloudButton.left() - padding);
         } else {
             projectButton.setRight(infoMissionButton.left() - padding);

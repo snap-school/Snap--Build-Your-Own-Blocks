@@ -2051,7 +2051,7 @@ BlockMorph.prototype.userMenu = function () {
         );
     }
 
-    if (world.role != 0) {
+    if (world.role != world.role.STUDENT) {
         menu.addItem(
             "hide",
             function(){
@@ -2059,21 +2059,6 @@ BlockMorph.prototype.userMenu = function () {
             }
         );
     }
-
-    menu.addItem(
-        "hide",
-        function(){
-            this.hide();
-        }
-    );
-
-
-    menu.addItem(
-        "hide",
-        function(){
-            this.hide();
-        }
-    );
 
 
     menu.addItem(
