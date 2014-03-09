@@ -481,7 +481,7 @@ IDE_Morph.prototype.createControlBar = function () {
     };
     this.add(this.controlBar);
 
-    if (world.role != world.role.STUDENT) {
+    if (world.role != "STUDENT") {
         //hidding for student.
         //smallStageButton
         button = new ToggleButtonMorph(
@@ -716,7 +716,7 @@ IDE_Morph.prototype.createControlBar = function () {
     button.drawNew();
     // button.hint = 'cloud operations';
     button.fixLayout();
-    if (world.role != world.role.STUDENT) {
+    if (world.role != "STUDENT") {
         cloudButton = button;
         this.controlBar.add(cloudButton);
         this.controlBar.cloudButton = cloudButton; // for menu positioning
@@ -752,12 +752,12 @@ IDE_Morph.prototype.createControlBar = function () {
         infoMissionButton.setRight(settingsButton.left() - padding);
 
         //hiding cloud button for student
-        if (world.role != world.role.STUDENT) {
+        if (world.role != "STUDENT") {
             cloudButton.setCenter(myself.controlBar.center());
             cloudButton.setRight(infoMissionButton.left() - padding);
         }
         projectButton.setCenter(myself.controlBar.center());
-        if (world.role != world.role.STUDENT) {
+        if (world.role != "STUDENT") {
             projectButton.setRight(cloudButton.left() - padding);
         } else {
             projectButton.setRight(infoMissionButton.left() - padding);
@@ -1902,7 +1902,7 @@ IDE_Morph.prototype.snapMenu = function () {
             window.open('help/SnapManual.pdf', 'SnapReferenceManual');
         }
     );
-    if(world.role != world.role.STUDENT) {
+    if(world.role != "STUDENT") {
         //hidding some useless menu for student.
         menu.addItem(
             'Snap! website',
@@ -1943,7 +1943,7 @@ IDE_Morph.prototype.snapMenu = function () {
 };
 
 IDE_Morph.prototype.cloudMenu = function () {
-    if (world.role != world.role.STUDENT) {
+    if (world.role != "STUDENT") {
         //hidding cloud menu for student
         var menu,
             myself = this,
@@ -2107,7 +2107,7 @@ IDE_Morph.prototype.settingsMenu = function () {
         'userSetBlocksScale'
     );
 
-    if (world.role != world.role.STUDENT) {
+    if (world.role != "STUDENT") {
         //hidding some useless menu for student
         menu.addLine();
         addPreference(
@@ -2503,7 +2503,7 @@ IDE_Morph.prototype.projectMenu = function () {
     );
 
     // interface clean pour les student
-    if(world.role != world.role.STUDENT){
+    if(world.role != "STUDENT"){
         menu.addLine();
         menu.addItem(
             'Import tools',

@@ -2051,7 +2051,7 @@ BlockMorph.prototype.userMenu = function () {
         );
     }
 
-    if (world.role != world.role.STUDENT) {
+    if (world.role != "STUDENT") {
         menu.addItem(
             "hide",
             function(){
