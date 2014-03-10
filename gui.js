@@ -2672,8 +2672,9 @@ IDE_Morph.prototype.allMissionList = function () {
         world = this.world(),
         text = localize('Do you want to save befor exit?'),
         btn1;
-    
+
     dialog.inform(localize('Save'), text, world);
+
     dialog.addButton(function(){
             myself.exportProjectToServer();
             window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
@@ -3029,7 +3030,7 @@ IDE_Morph.prototype.exportProjectToServer = function () {
     }
     try {
         str = this.serializer.serialize(this.stage);
-        url = "http://"+document.location.host + document.location.pathname;
+        url = document.location.protocol + "//"+document.location.host + document.location.pathname;
         jsonData = {program:{source_code: str }};
         putURL(url, jsonData);
         this.showMessage('Exported!', 1);
