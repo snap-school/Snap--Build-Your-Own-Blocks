@@ -124,7 +124,7 @@ PrototypeHatBlockMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.objects = '2014-February-05';
+modules.objects = '2014-February-11';
 
 var SpriteMorph;
 var StageMorph;
@@ -803,6 +803,11 @@ SpriteMorph.prototype.initBlocks = function () {
             type: 'command',
             category: 'sensing',
             spec: 'set turbo mode to %b'
+        },
+        reportDate: {
+            type: 'reporter',
+            category: 'sensing',
+            spec: 'current %dates'
         },
 
         // Operators
@@ -1740,6 +1745,8 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('reportIsFastTracking'));
         blocks.push(block('doSetFastTracking'));
+        blocks.push('-');
+        blocks.push(block('reportDate'));
 
     // for debugging: ///////////////
 
@@ -4455,6 +4462,8 @@ StageMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('reportIsFastTracking'));
         blocks.push(block('doSetFastTracking'));
+        blocks.push('-');
+        blocks.push(block('reportDate'));
 
     // for debugging: ///////////////
 

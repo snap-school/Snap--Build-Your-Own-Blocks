@@ -68,7 +68,7 @@ sb, CommentMorph, CommandBlockMorph, BlockLabelPlaceHolderMorph, Audio*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.gui = '2014-February-04';
+modules.gui = '2014-February-13';
 
 // Declarations
 
@@ -1478,7 +1478,8 @@ IDE_Morph.prototype.setProjectName = function (string) {
 // IDE_Morph resizing
 
 IDE_Morph.prototype.setExtent = function (point) {
-    var minExt,
+    var padding = new Point(430, 110),
+        minExt,
         ext;
 
     // determine the minimum dimensions making sense for the current mode
@@ -1494,7 +1495,12 @@ IDE_Morph.prototype.setExtent = function (point) {
         }
     */
         minExt = this.isSmallStage ?
+                padding.add(StageMorph.prototype.dimensions.divideBy(2))
+                      : padding.add(StageMorph.prototype.dimensions);
+/*
+        minExt = this.isSmallStage ?
                 new Point(700, 350) : new Point(910, 490);
+*/
     }
     ext = point.max(minExt);
     IDE_Morph.uber.setExtent.call(this, ext);
@@ -2876,6 +2882,7 @@ IDE_Morph.prototype.newProject = function () {
     this.globalVariables = new VariableFrame();
     this.currentSprite = new SpriteMorph(this.globalVariables);
     this.sprites = new List([this.currentSprite]);
+    StageMorph.prototype.dimensions = new Point(480, 360);
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
@@ -3687,6 +3694,64 @@ IDE_Morph.prototype.setBlocksScale = function (num) {
     this.fixLayout();
     this.openProjectString(projectData);
     this.saveSetting('zoom', num);
+};
+
+// IDE_Morph stage size manipulation
+
+IDE_Morph.prototype.userSetStageSize = function () {
+    new DialogBoxMorph(
+        this,
+        this.setStageExtent,
+        this
+    ).promptVector(
+        "Stage size",
+        StageMorph.prototype.dimensions,
+        new Point(480, 360),
+        'Stage width',
+        'Stage height',
+        this.world(),
+        null, // pic
+        null // msg
+    );
+};
+
+IDE_Morph.prototype.setStageExtent = function (aPoint) {
+    var myself = this,
+        world = this.world(),
+        ext = aPoint.max(new Point(480, 180));
+
+    function zoom() {
+        myself.step = function () {
+            var delta = ext.subtract(
+                StageMorph.prototype.dimensions
+            ).divideBy(2);
+            if (delta.abs().lt(new Point(5, 5))) {
+                StageMorph.prototype.dimensions = ext;
+                delete myself.step;
+            } else {
+                StageMorph.prototype.dimensions =
+                    StageMorph.prototype.dimensions.add(delta);
+            }
+            myself.stage.setExtent(StageMorph.prototype.dimensions);
+            myself.stage.clearPenTrails();
+            myself.fixLayout();
+            this.setExtent(world.extent());
+        };
+    }
+
+    this.stageRatio = 1;
+    this.isSmallStage = false;
+    this.controlBar.stageSizeButton.refresh();
+    this.setExtent(world.extent());
+    if (this.isAnimating) {
+        zoom();
+    } else {
+        StageMorph.prototype.dimensions = ext;
+        this.stage.setExtent(StageMorph.prototype.dimensions);
+        this.stage.clearPenTrails();
+        this.fixLayout();
+        this.setExtent(world.extent());
+    }
 };
 
 // IDE_Morph cloud interface
