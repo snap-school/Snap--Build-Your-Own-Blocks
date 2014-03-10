@@ -667,8 +667,8 @@ SnapTranslator.dict.fr = {
         'Liste des missions',
     'Redirection on the list of all missions\nDon\'t forget to save before':
         'Retour sur la liste des missions \n n\'oublie pas de sauver avant',
-    'Do you want to save befor exit?'
-        'Voullez vous Sauvegarder avant de quitter?'
+    'Do you want to save befor exit?':
+        'Voullez vous Sauvegarder avant de quitter?',
 
     // settings menu
     'Language...':
