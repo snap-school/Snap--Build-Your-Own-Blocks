@@ -9942,7 +9942,7 @@ WorldMorph.prototype.init = function (aCanvas, fillPage) {
         this.useFillPage = true;
     }
     this.isDevMode = false;
-    this.role = {STUDENT : 0, TEACHER : 1};
+    this.role = "STUDENT";
     this.broken = [];
     this.hand = new HandMorph(this);
     this.keyboardReceiver = null;

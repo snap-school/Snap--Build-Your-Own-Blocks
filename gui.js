@@ -697,26 +697,26 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(infoMissionButton);
     this.controlBar.infoMissionButton = infoMissionButton; // for menu positioning
 
-    // cloudButton
-    button = new PushButtonMorph(
-        this,
-        'cloudMenu',
-        new SymbolMorph('cloud', 11)
-    );
-    button.corner = 12;
-    button.color = colors[0];
-    button.highlightColor = colors[1];
-    button.pressColor = colors[2];
-    button.labelMinExtent = new Point(36, 18);
-    button.padding = 0;
-    button.labelShadowOffset = new Point(-1, -1);
-    button.labelShadowColor = colors[1];
-    button.labelColor = this.buttonLabelColor;
-    button.contrast = this.buttonContrast;
-    button.drawNew();
-    // button.hint = 'cloud operations';
-    button.fixLayout();
-    if (world.role != "STUDENT") {
+    if(world.role != "STUDENT"){
+        // cloudButton
+        button = new PushButtonMorph(
+            this,
+            'cloudMenu',
+            new SymbolMorph('cloud', 11)
+        );
+        button.corner = 12;
+        button.color = colors[0];
+        button.highlightColor = colors[1];
+        button.pressColor = colors[2];
+        button.labelMinExtent = new Point(36, 18);
+        button.padding = 0;
+        button.labelShadowOffset = new Point(-1, -1);
+        button.labelShadowColor = colors[1];
+        button.labelColor = this.buttonLabelColor;
+        button.contrast = this.buttonContrast;
+        button.drawNew();
+        // button.hint = 'cloud operations';
+        button.fixLayout();
         cloudButton = button;
         this.controlBar.add(cloudButton);
         this.controlBar.cloudButton = cloudButton; // for menu positioning
@@ -735,15 +735,6 @@ IDE_Morph.prototype.createControlBar = function () {
 
         x = myself.right() - (StageMorph.prototype.dimensions.x
             * (myself.isSmallStage ? myself.stageRatio : 1));
-
-        [stageSizeButton, appModeButton].forEach(
-            function (button) {
-                x += padding;
-                button.setCenter(myself.controlBar.center());
-                button.setLeft(x);
-                x += button.width();
-            }
-        );
 
         settingsButton.setCenter(myself.controlBar.center());
         settingsButton.setLeft(this.left());
@@ -3407,8 +3398,9 @@ IDE_Morph.prototype.toggleSliderExecute = function () {
 };
 
 IDE_Morph.prototype.toggleAppMode = function (appMode) {
-    var world = this.world(),
-        elements = [
+    var world = this.world();
+    if(world.role != "STUDENT"){
+        var elements = [
             this.logo,
             this.controlBar.cloudButton,
             this.controlBar.projectButton,
@@ -3421,6 +3413,19 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
             this.palette,
             this.categories
         ];
+    } else {
+        var elements = [
+            this.logo,
+            this.controlBar.projectButton,
+            this.controlBar.settingsButton,
+            this.corral,
+            this.corralBar,
+            this.spriteEditor,
+            this.spriteBar,
+            this.palette,
+            this.categories
+        ];
+    }
 
     this.isAppMode = isNil(appMode) ? !this.isAppMode : appMode;
 
