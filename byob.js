@@ -702,12 +702,17 @@ CustomCommandBlockMorph.prototype.userMenu = function () {
         if (!menu) {
             menu = new MenuMorph(this);
         } else {
-            menu.addLine();
+            if(world.role != "STUDENT")
+                menu.addLine();
+
         }
-        // menu.addItem("export definition...", 'exportBlockDefinition');
-        menu.addItem("delete block definition...", 'deleteBlockDefinition');
+        if(world.role != "STUDENT"){
+            // menu.addItem("export definition...", 'exportBlockDefinition');
+            menu.addItem("delete block definition...", 'deleteBlockDefinition');
+        }
     }
-    menu.addItem("edit...", 'edit'); // works also for prototypes
+    if(world.role != "STUDENT")
+        menu.addItem("edit...", 'edit'); // works also for prototypes
     return menu;
 };
 
