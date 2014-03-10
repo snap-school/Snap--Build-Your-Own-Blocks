@@ -2377,13 +2377,13 @@ IDE_Morph.prototype.missionMenu = function () {
         pos = this.controlBar.infoMissionButton.bottomLeft();
 
     menu = new MenuMorph(this);
-    menu.addItem('Description', 'descriptionMission');
-    menu.addItem('Save project on server',
+    menu.addItem(localize('Description'), 'descriptionMission');
+    menu.addItem(localize('Save project on server'),
         function () { myself.exportProjectToServer(); }
     )
     menu.addItem(
-        'All missions list','allMissionList',
-        'Redirection on the list of all missions\nDon\'t forget to save before'
+        localize('All missions list'),'allMissionList',
+        localize('Redirection on the list of all missions\nDon\'t forget to save before')
     )
     menu.popup(world, pos);
 };
@@ -2670,25 +2670,23 @@ IDE_Morph.prototype.allMissionList = function () {
     var dialog = new DialogBoxMorph().withKey('Sauvegarde'),
         myself = this,
         world = this.world(),
-        text = "Voullez vous Sauvegarder avant de quitter?",
+        text = localize('Do you want to save befor exit?'),
         btn1;
     
-    dialog.inform('Sauvegarde', text, world);
+    dialog.inform(localize('Save'), text, world);
     dialog.addButton(function(){
             myself.exportProjectToServer();
             window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
         },
-        'oui');
+        localize('Yes'));
     dialog.addButton(function(){
             window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
         },
-        'non');
+        localize('non'));
     btn1 = dialog.buttons.children[0];
     btn1.hide();
     dialog.fixLayout();
     dialog.drawNew();
-    //dialog.popUp(world);
-    //dialog.setCenter(world.center());
 },
 
 IDE_Morph.prototype.aboutSnap = function () {
