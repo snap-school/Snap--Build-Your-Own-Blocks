@@ -2372,20 +2372,17 @@ IDE_Morph.prototype.settingsMenu = function () {
 
 IDE_Morph.prototype.missionMenu = function () {
     var menu,
+        myself = this,
         world = this.world(),
         pos = this.controlBar.infoMissionButton.bottomLeft();
 
     menu = new MenuMorph(this);
     menu.addItem('Description', 'descriptionMission');
-    menu.addItem(
-        'Save project on server',
+    menu.addItem('Save project on server',
         function () { myself.exportProjectToServer(); }
     )
     menu.addItem(
-        'All missions list',
-        function () {
-            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
-        },
+        'All missions list','allMissionList',
         'Redirection on the list of all missions\nDon\'t forget to save before'
     )
     menu.popup(world, pos);
@@ -2668,6 +2665,31 @@ IDE_Morph.prototype.getCostumesList = function (dirname) {
 IDE_Morph.prototype.descriptionMission = function () {
     jQuery("#missionModal").modal('toggle')
 };
+
+IDE_Morph.prototype.allMissionList = function () {
+    var dialog = new DialogBoxMorph().withKey('Sauvegarde'),
+        myself = this,
+        world = this.world(),
+        text = "Voullez vous Sauvegarder avant de quitter?",
+        btn1;
+    
+    dialog.inform('Sauvegarde', text, world);
+    dialog.addButton(function(){
+            myself.exportProjectToServer();
+            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
+        },
+        'oui');
+    dialog.addButton(function(){
+            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
+        },
+        'non');
+    btn1 = dialog.buttons.children[0];
+    btn1.hide();
+    dialog.fixLayout();
+    dialog.drawNew();
+    //dialog.popUp(world);
+    //dialog.setCenter(world.center());
+},
 
 IDE_Morph.prototype.aboutSnap = function () {
     var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations,
