@@ -2981,16 +2981,23 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
 IDE_Morph.prototype.exportProjectToServer = function () {
     var menu, str, jsonData, url;
 
-    function putURL(url, jsondata) {
+    function putURL(url, jsondata, new_file) {
         try {
             var request = new XMLHttpRequest({responseType: "json"});
-            request.open('PUT', url, true);
+            if (new_file) {
+                request.open('POST', url, true);
+            } else {
+                request.open('PUT', url, true);
+            }
             var token = document.getElementsByName("csrf-token").item(0).content;
             request.setRequestHeader("X-CSRF-Token", token);
             request.setRequestHeader("Content-Type", "application/json");
             request.setRequestHeader("Accept", "application/json")
             request.send(JSON.stringify(jsondata));
             if (request.status === 200) {
+                if (new_file) {
+                    history.pushState(null, "page 2", "bar.html"); //TODO
+                }
                 return request.responseText;
             }
             throw new Error('unable to retrieve ' + url);
@@ -3000,9 +3007,20 @@ IDE_Morph.prototype.exportProjectToServer = function () {
     }
     try {
         str = this.serializer.serialize(this.stage);
-        url = document.location.protocol + "//"+document.location.host + document.location.pathname;
-        jsonData = {program:{source_code: str }};
-        putURL(url, jsonData);
+        var ressource = document.location.pathname.split('/');
+        if (ressource[1] === "projects" && ressource[2] === "new") {
+            jsonData = {project:{name: "TODO", source_code: str}};
+            url = document.location.protocol + "//"+document.location.host + "/projects";
+            putURL(url, jsonData, true);
+        } else {
+            url = document.location.protocol + "//"+document.location.host + document.location.pathname;
+            if (ressource[1] === "projects") {
+                jsonData = {project:{name: "TODO",source_code: str }};
+            } else {
+                jsonData = {program:{source_code: str }};
+            }
+            putURL(url, jsonData, false);
+        }
         this.showMessage('Exported!', 1);
     } catch (err) {
         this.showMessage('Export failed: ' + err);
