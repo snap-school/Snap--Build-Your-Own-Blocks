@@ -2016,60 +2016,60 @@ BlockMorph.prototype.userMenu = function () {
         "help...",
         'showHelp'
     );
-    if (this.isTemplate) {
-        if (!(this.parent instanceof SyntaxElementMorph)) {
-            if (this.selector !== 'evaluateCustomBlock') {
-                menu.addItem(
-                    "hide",
-                    'hidePrimitive'
-                );
+    if (world.role !== "STUDENT") {
+        if (this.isTemplate) {
+            if (!(this.parent instanceof SyntaxElementMorph)) {
+                if (this.selector !== 'evaluateCustomBlock') {
+                    menu.addItem(
+                        "hide",
+                        'hidePrimitive'
+                    );
+                }
+                if (StageMorph.prototype.enableCodeMapping) {
+                    menu.addLine();
+                    menu.addItem(
+                        'header mapping...',
+                        'mapToHeader'
+                    );
+                    menu.addItem(
+                        'code mapping...',
+                        'mapToCode'
+                    );
+                }
             }
-            if (StageMorph.prototype.enableCodeMapping) {
-                menu.addLine();
-                menu.addItem(
-                    'header mapping...',
-                    'mapToHeader'
-                );
-                menu.addItem(
-                    'code mapping...',
-                    'mapToCode'
-                );
-            }
+            return menu;
         }
-        return menu;
-    }
-    menu.addLine();
-    if (this.selector === 'reportGetVar') {
-        blck = this.fullCopy();
-        blck.addShadow();
-        menu.addItem(
-            'rename...',
-            function () {
-                new DialogBoxMorph(
-                    myself,
-                    myself.setSpec,
-                    myself
-                ).prompt(
-                    "Variable name",
-                    myself.blockSpec,
-                    world,
-                    blck.fullImage(), // pic
-                    InputSlotMorph.prototype.getVarNamesDict.call(myself)
-                );
-            }
-        );
-    } else if (SpriteMorph.prototype.blockAlternatives[this.selector]) {
-        menu.addItem(
-            'relabel...',
-            function () {
-                myself.relabel(
-                    SpriteMorph.prototype.blockAlternatives[myself.selector]
-                );
-            }
-        );
-    }
+        menu.addLine();
+        if (this.selector === 'reportGetVar') {
+            blck = this.fullCopy();
+            blck.addShadow();
+            menu.addItem(
+                'rename...',
+                function () {
+                    new DialogBoxMorph(
+                        myself,
+                        myself.setSpec,
+                        myself
+                    ).prompt(
+                        "Variable name",
+                        myself.blockSpec,
+                        world,
+                        blck.fullImage(), // pic
+                        InputSlotMorph.prototype.getVarNamesDict.call(myself)
+                    );
+                }
+            );
+        } else if (SpriteMorph.prototype.blockAlternatives[this.selector]) {
+            menu.addItem(
+                'relabel...',
+                function () {
+                    myself.relabel(
+                        SpriteMorph.prototype.blockAlternatives[myself.selector]
+                    );
+                }
+            );
+        }
 
-    if (world.role != "STUDENT") {
         menu.addItem(
             "hide",
             function(){
@@ -2098,10 +2098,12 @@ BlockMorph.prototype.userMenu = function () {
             'only duplicate this block'
         );
     }
-    menu.addItem(
-        "delete",
-        'userDestroy'
-    );
+    if (world.role !== 'STUDENT') {
+        menu.addItem(
+            "delete",
+            'userDestroy'
+        );
+    }
     menu.addItem(
         "script pic...",
         function () {
@@ -4895,15 +4897,16 @@ ScriptsMorph.prototype.userMenu = function () {
             ide = blockEditor.target.parentThatIsA(IDE_Morph);
         }
     }
-
-    menu.addItem(
-        'show all',
-        'showall'
-    );
-    menu.addItem(
-        'hide all',
-        'hideall'
-    );
+    if (world.role !== 'STUDENT') {
+        menu.addItem(
+            'show all',
+            'showall'
+        );
+        menu.addItem(
+            'hide all',
+            'hideall'
+        );
+    }
 
     menu.addItem('clean up', 'cleanUp', 'arrange scripts\nvertically');
     menu.addItem('add comment', 'addComment');
