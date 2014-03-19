@@ -954,7 +954,6 @@ IDE_Morph.prototype.createSpriteBar = function () {
     this.spriteBar = new Morph();
     this.spriteBar.color = this.frameColor;
     this.add(this.spriteBar);
-
     function addRotationStyleButton(rotationStyle) {
         var colors = myself.rotationStyleColors,
             button;
@@ -1005,18 +1004,20 @@ IDE_Morph.prototype.createSpriteBar = function () {
         }
         return button;
     }
-
-    addRotationStyleButton(1);
-    addRotationStyleButton(2);
-    addRotationStyleButton(0);
-    this.rotationStyleButtons = rotationStyleButtons;
-
+    if (world.role !== 'STUDENT') {
+        addRotationStyleButton(1);
+        addRotationStyleButton(2);
+        addRotationStyleButton(0);
+        this.rotationStyleButtons = rotationStyleButtons;
+    }
     thumbnail = new Morph();
     thumbnail.setExtent(thumbSize);
     thumbnail.image = this.currentSprite.thumbnail(thumbSize);
-    thumbnail.setPosition(
-        rotationStyleButtons[0].topRight().add(new Point(5, 3))
-    );
+    if (world.role !== 'STUDENT') {
+        thumbnail.setPosition(
+            rotationStyleButtons[0].topRight().add(new Point(5, 3))
+        );
+    }
     this.spriteBar.add(thumbnail);
 
     thumbnail.fps = 3;
@@ -1042,37 +1043,39 @@ IDE_Morph.prototype.createSpriteBar = function () {
         myself.currentSprite.setName(nameField.getValue());
     };
 
-    // padlock
-    padlock = new ToggleMorph(
-        'checkbox',
-        null,
-        function () {
-            myself.currentSprite.isDraggable =
-                !myself.currentSprite.isDraggable;
-        },
-        localize('draggable'),
-        function () {
-            return myself.currentSprite.isDraggable;
+    if (world.role !== 'STUDENT') {
+        // padlock
+        padlock = new ToggleMorph(
+            'checkbox',
+            null,
+            function () {
+                myself.currentSprite.isDraggable =
+                    !myself.currentSprite.isDraggable;
+            },
+            localize('draggable'),
+            function () {
+                return myself.currentSprite.isDraggable;
+            }
+        );
+        padlock.label.isBold = false;
+        padlock.label.setColor(this.buttonLabelColor);
+        padlock.color = tabColors[2];
+        padlock.highlightColor = tabColors[0];
+        padlock.pressColor = tabColors[1];
+
+        padlock.tick.shadowOffset = MorphicPreferences.isFlat ?
+                new Point() : new Point(-1, -1);
+        padlock.tick.shadowColor = new Color(); // black
+        padlock.tick.color = this.buttonLabelColor;
+        padlock.tick.isBold = false;
+        padlock.tick.drawNew();
+
+        padlock.setPosition(nameField.bottomLeft().add(2));
+        padlock.drawNew();
+        this.spriteBar.add(padlock);
+        if (this.currentSprite instanceof StageMorph) {
+            padlock.hide();
         }
-    );
-    padlock.label.isBold = false;
-    padlock.label.setColor(this.buttonLabelColor);
-    padlock.color = tabColors[2];
-    padlock.highlightColor = tabColors[0];
-    padlock.pressColor = tabColors[1];
-
-    padlock.tick.shadowOffset = MorphicPreferences.isFlat ?
-            new Point() : new Point(-1, -1);
-    padlock.tick.shadowColor = new Color(); // black
-    padlock.tick.color = this.buttonLabelColor;
-    padlock.tick.isBold = false;
-    padlock.tick.drawNew();
-
-    padlock.setPosition(nameField.bottomLeft().add(2));
-    padlock.drawNew();
-    this.spriteBar.add(padlock);
-    if (this.currentSprite instanceof StageMorph) {
-        padlock.hide();
     }
 
     // tab bar
@@ -1889,18 +1892,17 @@ IDE_Morph.prototype.userMenu = function () {
 IDE_Morph.prototype.snapMenu = function () {
     var menu,
         world = this.world();
-
-    menu = new MenuMorph(this);
-    menu.addItem('About...', 'aboutSnap');
-    menu.addLine();
-    menu.addItem(
-        'Reference manual',
-        function () {
-            window.open('help/SnapManual.pdf', 'SnapReferenceManual');
-        }
-    );
     if(world.role != "STUDENT") {
         //hidding some useless menu for student.
+        menu = new MenuMorph(this);
+        menu.addItem('About...', 'aboutSnap');
+        menu.addLine();
+        menu.addItem(
+            'Reference manual',
+            function () {
+                window.open('help/SnapManual.pdf', 'SnapReferenceManual');
+            }
+        );
         menu.addItem(
             'Snap! website',
             function () {
