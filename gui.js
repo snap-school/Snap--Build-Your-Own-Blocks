@@ -3009,13 +3009,13 @@ IDE_Morph.prototype.exportProjectToServer = function () {
         str = this.serializer.serialize(this.stage);
         var ressource = document.location.pathname.split('/');
         if (ressource[1] === "projects" && ressource[2] === "new") {
-            jsonData = {project:{name: "TODO", source_code: str}};
+            jsonData = {project:{name: world.children[0].projectName, source_code: str}};
             url = document.location.protocol + "//"+document.location.host + "/projects";
             putURL(url, jsonData, true);
         } else {
             url = document.location.protocol + "//"+document.location.host + document.location.pathname;
             if (ressource[1] === "projects") {
-                jsonData = {project:{name: "TODO",source_code: str }};
+                jsonData = {project:{name: world.children[0].projectName, source_code: str }};
             } else {
                 jsonData = {program:{source_code: str }};
             }
