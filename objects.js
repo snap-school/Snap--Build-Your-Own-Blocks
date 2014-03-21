@@ -530,6 +530,7 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'control',
             spec: 'when I receive %msgHat'
         },
+        //add receiveMessage command here
         doBroadcast: {
             type: 'command',
             category: 'control',
