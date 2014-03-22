@@ -2387,6 +2387,10 @@ IDE_Morph.prototype.missionMenu = function () {
         localize('All missions list'),'allMissionList',
         localize('Redirection on the list of all missions\nDon\'t forget to save before')
     )
+    menu.addItem(
+        localize('Resset the mission'), 'ressetMission',
+        localize('Drop the current mission and open a fresh one')
+    )
     menu.popup(world, pos);
 };
 
@@ -2659,6 +2663,29 @@ IDE_Morph.prototype.allMissionList = function () {
     dialog.fixLayout();
     dialog.drawNew();
 },
+
+
+IDE_Morph.prototype.ressetMission = function () {
+    //Load a new project by dropping the old one
+    //myself = this;
+    var request = new XMLHttpRequest(),
+        myself = this,
+        url = '/initialization_program_missions/:id';
+    try {
+        request.open('PUT', url, false);
+        request.send();
+        if (request.status === 200) {
+            print(request.responseText);
+        }
+        throw new Error('unable to put ' + url);
+    } catch (err) {
+        myself.showMessage(err);
+    }
+    //jQuery("/initialization_program_missions/:id").modal('toggle')
+    //window.putURL(window.getURL(document.querySelector('#world').dataset.file) + 'initialization_program_missions/:id');
+    //myself.openProjectString(window.getURL(document.querySelector('#world').dataset.file));
+
+}
 
 IDE_Morph.prototype.aboutSnap = function () {
     var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations,
