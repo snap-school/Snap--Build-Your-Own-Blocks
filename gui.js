@@ -2670,21 +2670,17 @@ IDE_Morph.prototype.ressetMission = function () {
     //myself = this;
     var request = new XMLHttpRequest(),
         myself = this,
-        url = '/initialization_program_missions/:id';
+        mission_id = window.location.pathname.split('/')[2],
+        url = '/initialization_program_missions/' + mission_id;
     try {
         request.open('PUT', url, false);
+        var token = document.getElementsByName("csrf-token").item(0).content;
+        request.setRequestHeader("X-CSRF-Token", token);
         request.send();
-        if (request.status === 200) {
-            print(request.responseText);
-        }
-        throw new Error('unable to put ' + url);
     } catch (err) {
         myself.showMessage(err);
     }
-    //jQuery("/initialization_program_missions/:id").modal('toggle')
-    //window.putURL(window.getURL(document.querySelector('#world').dataset.file) + 'initialization_program_missions/:id');
-    //myself.openProjectString(window.getURL(document.querySelector('#world').dataset.file));
-
+    location.reload(true);
 }
 
 IDE_Morph.prototype.aboutSnap = function () {
