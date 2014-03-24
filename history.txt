@@ -1626,7 +1626,7 @@ ______
 
 130415
 ------
-* Blocks: place sticky comments on World layer on dragging their anchor block 
+* Blocks: place sticky comments on World layer on dragging their anchor block
 
 130416
 ------
@@ -1704,7 +1704,7 @@ ______
 130514
 ------
 * paint.js: Paint editor, first version, contributed by Kartik Chandra, Yay!!
-* Threads, Objects, Blocks: Broadcast & message enhancements: When I receive <any msg>, and getLastMessage reporter + watcher 
+* Threads, Objects, Blocks: Broadcast & message enhancements: When I receive <any msg>, and getLastMessage reporter + watcher
 
 130515
 ------
@@ -1726,7 +1726,7 @@ ______
 
 130605
 ------
-* Objects: fix for hiding 'getLastAnswer' and 'getTimer' primitives 
+* Objects: fix for hiding 'getLastAnswer' and 'getTimer' primitives
 
 130606
 ------
@@ -1837,7 +1837,7 @@ ______
 130801
 ------
 * Blocks, Threads: "whitespace" & other options in SPLIT reporter's dropdown
-* Blocks: Italicize editable input options (e.g. for the SPLT block) 
+* Blocks: Italicize editable input options (e.g. for the SPLT block)
 * Blocks: Undrop Reporters feature (in script areas' context menus)
 
 130802
@@ -2089,3 +2089,17 @@ ______
 140205
 ------
 * Objects, Paint: One-stop-shopping for stage dimensions (changing the stage dimensions in line 3720 of objects.js takes care of everything)
+
+140211
+------
+* GUI: Set stage dimensions arbitrarily (new entries in the settings menu when holding shift)
+* Store: Saving & Loading for arbitrary stage dimensions in the project data
+* new Date block, thanks, Michael!!!
+
+140213
+------
+* GUI, Store: constrain minimum stage size to 480 x 180
+* GUI: Fixed #322, #324
+* Widgets: new “promptVector” dialog box feature
+* GUI: Use new vector prompter for stage dimensions
+* German translation update

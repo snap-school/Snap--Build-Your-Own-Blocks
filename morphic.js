@@ -1036,6 +1036,7 @@
 FileList, getBlurredShadowSupport*/
 
 var morphicVersion = '2014-February-03';
+
 var modules = {}; // keep track of additional loaded modules
 var useBlurredShadows = getBlurredShadowSupport(); // check for Chrome-bug
 
@@ -9941,6 +9942,7 @@ WorldMorph.prototype.init = function (aCanvas, fillPage) {
         this.useFillPage = true;
     }
     this.isDevMode = false;
+    this.role = "STUDENT";
     this.broken = [];
     this.hand = new HandMorph(this);
     this.keyboardReceiver = null;
@@ -10352,17 +10354,6 @@ WorldMorph.prototype.initEventListeners = function () {
         },
         false
     );
-
-    window.onbeforeunload = function (evt) {
-        var e = evt || window.event,
-            msg = "Are you sure you want to leave?";
-        // For IE and Firefox
-        if (e) {
-            e.returnValue = msg;
-        }
-        // For Safari / chrome
-        return msg;
-    };
 };
 
 WorldMorph.prototype.mouseDownLeft = function () {

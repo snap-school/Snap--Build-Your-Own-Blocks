@@ -155,7 +155,8 @@ DialogBoxMorph, BlockInputFragmentMorph, PrototypeHatBlockMorph, Costume*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.blocks = '2014-January-09';
+modules.blocks = '2014-February-11';
+
 
 var SyntaxElementMorph;
 var BlockMorph;
@@ -812,6 +813,24 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                 true // read-only
             );
             break;
+        case '%dates':
+            part = new InputSlotMorph(
+                null, // text
+                false, // non-numeric
+                {
+                    'year' : ['year'],
+                    'month' : ['month'],
+                    'date' : ['date'],
+                    'day of week' : ['day of week'],
+                    'hour' : ['hour'],
+                    'minute' : ['minute'],
+                    'second' : ['second'],
+                    'time in milliseconds' : ['time in milliseconds']
+                },
+                true // read-only
+            );
+            part.setContents(['date']);
+            break;
         case '%delim':
             part = new InputSlotMorph(
                 null, // text
@@ -1191,7 +1210,6 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                 true // read-only
             );
             break;
-
 
     // symbols:
 
@@ -1769,6 +1787,7 @@ SyntaxElementMorph.prototype.endLayout = function () {
     %f        - round function slot, unevaluated if replaced,
     %r        - round reporter slot
     %p        - hexagonal predicate slot
+    %visible  - visibility
 
     rings:
 
@@ -1837,6 +1856,8 @@ BlockMorph.prototype.init = function () {
     this.selector = null; // name of method to be triggered
     this.blockSpec = ''; // formal description of label and arguments
     this.comment = null; // optional "sticky" comment morph
+
+    this.hidden = false; // must be hidden
 
     // not to be persisted:
     this.instantiationSpec = null; // spec to set upon fullCopy() of template
@@ -1995,58 +2016,68 @@ BlockMorph.prototype.userMenu = function () {
         "help...",
         'showHelp'
     );
-    if (this.isTemplate) {
-        if (!(this.parent instanceof SyntaxElementMorph)) {
-            if (this.selector !== 'evaluateCustomBlock') {
-                menu.addItem(
-                    "hide",
-                    'hidePrimitive'
-                );
+    if (world.role !== "STUDENT") {
+        if (this.isTemplate) {
+            if (!(this.parent instanceof SyntaxElementMorph)) {
+                if (this.selector !== 'evaluateCustomBlock') {
+                    menu.addItem(
+                        "hide",
+                        'hidePrimitive'
+                    );
+                }
+                if (StageMorph.prototype.enableCodeMapping) {
+                    menu.addLine();
+                    menu.addItem(
+                        'header mapping...',
+                        'mapToHeader'
+                    );
+                    menu.addItem(
+                        'code mapping...',
+                        'mapToCode'
+                    );
+                }
             }
-            if (StageMorph.prototype.enableCodeMapping) {
-                menu.addLine();
-                menu.addItem(
-                    'header mapping...',
-                    'mapToHeader'
-                );
-                menu.addItem(
-                    'code mapping...',
-                    'mapToCode'
-                );
-            }
+            return menu;
         }
-        return menu;
-    }
-    menu.addLine();
-    if (this.selector === 'reportGetVar') {
-        blck = this.fullCopy();
-        blck.addShadow();
+        menu.addLine();
+        if (this.selector === 'reportGetVar') {
+            blck = this.fullCopy();
+            blck.addShadow();
+            menu.addItem(
+                'rename...',
+                function () {
+                    new DialogBoxMorph(
+                        myself,
+                        myself.setSpec,
+                        myself
+                    ).prompt(
+                        "Variable name",
+                        myself.blockSpec,
+                        world,
+                        blck.fullImage(), // pic
+                        InputSlotMorph.prototype.getVarNamesDict.call(myself)
+                    );
+                }
+            );
+        } else if (SpriteMorph.prototype.blockAlternatives[this.selector]) {
+            menu.addItem(
+                'relabel...',
+                function () {
+                    myself.relabel(
+                        SpriteMorph.prototype.blockAlternatives[myself.selector]
+                    );
+                }
+            );
+        }
+
         menu.addItem(
-            'rename...',
-            function () {
-                new DialogBoxMorph(
-                    myself,
-                    myself.setSpec,
-                    myself
-                ).prompt(
-                    "Variable name",
-                    myself.blockSpec,
-                    world,
-                    blck.fullImage(), // pic
-                    InputSlotMorph.prototype.getVarNamesDict.call(myself)
-                );
+            "hide",
+            function(){
+                this.hide();
             }
         );
-    } else if (SpriteMorph.prototype.blockAlternatives[this.selector]) {
-        menu.addItem(
-            'relabel...',
-            function () {
-                myself.relabel(
-                    SpriteMorph.prototype.blockAlternatives[myself.selector]
-                );
-            }
-        );
     }
+
 
     menu.addItem(
         "duplicate",
@@ -2067,10 +2098,12 @@ BlockMorph.prototype.userMenu = function () {
             'only duplicate this block'
         );
     }
-    menu.addItem(
-        "delete",
-        'userDestroy'
-    );
+    if (world.role !== 'STUDENT') {
+        menu.addItem(
+            "delete",
+            'userDestroy'
+        );
+    }
     menu.addItem(
         "script pic...",
         function () {
@@ -2330,7 +2363,11 @@ BlockMorph.prototype.showHelp = function () {
             block.fullImage()
         );
     } else {
-        pic.src = 'help/' + spec + '.png';
+        pic.src = window.getAsset('help/' + SnapTranslator.language + '/' + spec + '.png');
+        // Back to English if no picture
+        pic.onerror = function () {
+            pic.src = window.getAsset('help/en/' + spec + '.png');
+        }
     }
 };
 
@@ -4860,6 +4897,17 @@ ScriptsMorph.prototype.userMenu = function () {
             ide = blockEditor.target.parentThatIsA(IDE_Morph);
         }
     }
+    if (world.role !== 'STUDENT') {
+        menu.addItem(
+            'show all',
+            'showall'
+        );
+        menu.addItem(
+            'hide all',
+            'hideall'
+        );
+    }
+
     menu.addItem('clean up', 'cleanUp', 'arrange scripts\nvertically');
     menu.addItem('add comment', 'addComment');
     if (this.lastDroppedBlock) {
@@ -4906,6 +4954,29 @@ ScriptsMorph.prototype.userMenu = function () {
 };
 
 // ScriptsMorph user menu features:
+
+ScriptsMorph.prototype.showall = function () {
+     this.children.forEach(function (child) {
+         if (child instanceof CommentMorph && child.block) {
+             child.show(); // skip anchored comments
+         }
+         if (child instanceof BlockMorph) {
+             child.show();
+         }
+     });
+ }
+
+ ScriptsMorph.prototype.hideall = function () {
+     this.children.forEach(function (child) {
+         if (child instanceof CommentMorph && child.block) {
+             child.hide(); // skip anchored comments
+         }
+         if (child instanceof BlockMorph) {
+             child.hide();
+         }
+     });
+ }
+
 
 ScriptsMorph.prototype.cleanUp = function () {
     var origin = this.topLeft(),
@@ -6174,7 +6245,7 @@ CSlotMorph.prototype.drawBottomEdge = function (context) {
     I am an editable text input slot. I can be either rectangular or
     rounded, and can have an optional drop-down menu. If I'm set to
     read-only I must have a drop-down menu and will assume a darker
-    shade of my    parent's color.
+    shade of my parent's color.
 
     my most important public attributes and accessors are:
 
@@ -6479,6 +6550,11 @@ InputSlotMorph.prototype.clonablesMenu = function () {
             dict[name] = name;
         });
     }
+    /*
+    obj.customBlocks.forEach(function (def, i) {
+        dict['§_def' + i] = def
+    });
+    */
     return dict;
 };
 

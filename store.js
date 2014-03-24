@@ -61,7 +61,7 @@ SyntaxElementMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.store = '2014-February-04';
+modules.store = '2014-February-13';
 
 
 // XML_Serializer ///////////////////////////////////////////////////////
@@ -377,6 +377,15 @@ SnapSerializer.prototype.loadProjectModel = function (xmlNode) {
         project.pentrails.src = model.pentrails.contents;
     }
     project.stage.setTempo(model.stage.attributes.tempo);
+    StageMorph.prototype.dimensions = new Point(480, 360);
+    if (model.stage.attributes.width) {
+        StageMorph.prototype.dimensions.x =
+            Math.max(+model.stage.attributes.width, 480);
+    }
+    if (model.stage.attributes.height) {
+        StageMorph.prototype.dimensions.y =
+            Math.max(+model.stage.attributes.height, 180);
+    }
     project.stage.setExtent(StageMorph.prototype.dimensions);
     SpriteMorph.prototype.useFlatLineEnds =
         model.stage.attributes.lines === 'flat';
@@ -813,7 +822,7 @@ SnapSerializer.prototype.loadScripts = function (scripts, model) {
     // private
     var myself = this,
         scale = SyntaxElementMorph.prototype.scale;
-    scripts.texture = 'scriptsPaneTexture.gif';
+    scripts.texture = window.getAsset('scriptsPaneTexture.gif');
     model.children.forEach(function (child) {
         var element;
         if (child.tag === 'script') {
@@ -908,16 +917,25 @@ SnapSerializer.prototype.loadComment = function (model) {
 SnapSerializer.prototype.loadBlock = function (model, isReporter) {
     // private
     var block, info, inputs, isGlobal, rm, receiver;
+    var isVisible = "true";
+    if (Object.prototype.hasOwnProperty.call(
+            model.attributes,
+            'visible'
+        )) {
+        isVisible = model.attributes['visible'];
+    }
     if (model.tag === 'block') {
         if (Object.prototype.hasOwnProperty.call(
                 model.attributes,
                 'var'
             )) {
-            return SpriteMorph.prototype.variableBlock(
-                model.attributes['var']
-            );
+            var block = SpriteMorph.prototype.variableBlock(
+                model.attributes['var']);
+            block.isVisible = isVisible === "true";
+            return block;
         }
         block = SpriteMorph.prototype.blockForSelector(model.attributes.s);
+        block.isVisible = isVisible === "true";
     } else if (model.tag === 'custom-block') {
         isGlobal = model.attributes.scope ? false : true;
         receiver = isGlobal ? this.project.stage
@@ -959,6 +977,7 @@ SnapSerializer.prototype.loadBlock = function (model, isReporter) {
             info.type === 'predicate',
             false
         );
+        block.isVisible = isVisible === "true";
     }
     if (block === null) {
         block = this.obsoleteBlock(isReporter);
@@ -1294,6 +1313,14 @@ SnapSerializer.prototype.openProject = function (project, ide) {
     ide.selectSprite(sprite);
     ide.fixLayout();
     ide.world().keyboardReceiver = project.stage;
+
+    world.children.forEach(function (morph) {
+                if (morph instanceof BlockMorph) {
+                    morph.changed();
+                    morph.drawNew();
+                    morph.changed();
+                }
+            });
 };
 
 // SnapSerializer XML-representation of objects:
@@ -1341,7 +1368,8 @@ StageMorph.prototype.toXML = function (serializer) {
         '<project name="@" app="@" version="@">' +
             '<notes>$</notes>' +
             '<thumbnail>$</thumbnail>' +
-            '<stage name="@" costume="@" tempo="@" threadsafe="@" ' +
+            '<stage name="@" width="@" height="@" ' +
+            'costume="@" tempo="@" threadsafe="@" ' +
             'lines="@" ' +
             'codify="@" ' +
             'scheduled="@" ~>' +
@@ -1364,6 +1392,8 @@ StageMorph.prototype.toXML = function (serializer) {
         (ide && ide.projectNotes) ? ide.projectNotes : '',
         thumbdata,
         this.name,
+        StageMorph.prototype.dimensions.x,
+        StageMorph.prototype.dimensions.y,
         this.getCostumeIdx(),
         this.getTempo(),
         this.isThreadSafe,
@@ -1580,8 +1610,9 @@ BlockMorph.prototype.toXML = BlockMorph.prototype.toScriptXML = function (
 
 BlockMorph.prototype.toBlockXML = function (serializer) {
     return serializer.format(
-        '<block s="@">%%</block>',
+        '<block s="@" visible="@">%%</block>',
         this.selector,
+        this.isVisible,
         serializer.store(this.inputs()),
         this.comment ? this.comment.toXML(serializer) : ''
     );

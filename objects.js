@@ -124,7 +124,7 @@ PrototypeHatBlockMorph*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.objects = '2014-February-05';
+modules.objects = '2014-February-11';
 
 var SpriteMorph;
 var StageMorph;
@@ -530,6 +530,7 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'control',
             spec: 'when I receive %msgHat'
         },
+        //add receiveMessage command here
         doBroadcast: {
             type: 'command',
             category: 'control',
@@ -803,6 +804,11 @@ SpriteMorph.prototype.initBlocks = function () {
             type: 'command',
             category: 'sensing',
             spec: 'set turbo mode to %b'
+        },
+        reportDate: {
+            type: 'reporter',
+            category: 'sensing',
+            spec: 'current %dates'
         },
 
         // Operators
@@ -1740,6 +1746,8 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('reportIsFastTracking'));
         blocks.push(block('doSetFastTracking'));
+        blocks.push('-');
+        blocks.push(block('reportDate'));
 
     // for debugging: ///////////////
 
@@ -2033,41 +2041,47 @@ SpriteMorph.prototype.freshPalette = function (category) {
         }
 
         if (canHidePrimitives()) {
-            menu.addItem(
-                'hide primitives',
-                function () {
-                    var defs = SpriteMorph.prototype.blocks;
-                    Object.keys(defs).forEach(function (sel) {
-                        if (defs[sel].category === category) {
+            //disable hide for student.
+            if (!myself.world().role == 0) {
+                menu.addItem(
+                    'hide primitives',
+                    function () {
+                        var defs = SpriteMorph.prototype.blocks;
+                        Object.keys(defs).forEach(function (sel) {
+                            if (defs[sel].category === category) {
+                                StageMorph.prototype.hiddenPrimitives[sel] = true;
+                            }
+                        });
+                        (more[category] || []).forEach(function (sel) {
                             StageMorph.prototype.hiddenPrimitives[sel] = true;
-                        }
-                    });
-                    (more[category] || []).forEach(function (sel) {
-                        StageMorph.prototype.hiddenPrimitives[sel] = true;
-                    });
-                    ide.flushBlocksCache(category);
-                    ide.refreshPalette();
-                }
-            );
+                        });
+                        ide.flushBlocksCache(category);
+                        ide.refreshPalette();
+                    }
+                );
+            }
         }
         if (hasHiddenPrimitives()) {
-            menu.addItem(
-                'show primitives',
-                function () {
-                    var hiddens = StageMorph.prototype.hiddenPrimitives,
-                        defs = SpriteMorph.prototype.blocks;
-                    Object.keys(hiddens).forEach(function (sel) {
-                        if (defs[sel].category === category) {
+            //disable show for student.
+            if (!myself.world().role == 0) {
+                menu.addItem(
+                    'show primitives',
+                    function () {
+                        var hiddens = StageMorph.prototype.hiddenPrimitives,
+                            defs = SpriteMorph.prototype.blocks;
+                        Object.keys(hiddens).forEach(function (sel) {
+                            if (defs[sel].category === category) {
+                                delete StageMorph.prototype.hiddenPrimitives[sel];
+                            }
+                        });
+                        (more[category] || []).forEach(function (sel) {
                             delete StageMorph.prototype.hiddenPrimitives[sel];
-                        }
-                    });
-                    (more[category] || []).forEach(function (sel) {
-                        delete StageMorph.prototype.hiddenPrimitives[sel];
-                    });
-                    ide.flushBlocksCache(category);
-                    ide.refreshPalette();
-                }
-            );
+                        });
+                        ide.flushBlocksCache(category);
+                        ide.refreshPalette();
+                    }
+                );
+            }
         }
         return menu;
     };
@@ -2320,6 +2334,7 @@ SpriteMorph.prototype.userMenu = function () {
         menu.addItem('help', 'nop');
         return menu;
     }
+
     menu.addItem("duplicate", 'duplicate');
     menu.addItem("delete", 'remove');
     menu.addItem("edit", 'edit');
@@ -4448,6 +4463,8 @@ StageMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('reportIsFastTracking'));
         blocks.push(block('doSetFastTracking'));
+        blocks.push('-');
+        blocks.push(block('reportDate'));
 
     // for debugging: ///////////////
 
@@ -5197,7 +5214,7 @@ Costume.prototype.shrinkWrap = function () {
 };
 
 Costume.prototype.boundingBox = function () {
-    // answer the rectangle surrounding my contents' non-transparent pixels 
+    // answer the rectangle surrounding my contents' non-transparent pixels
     var row,
         col,
         pic = this.contents,

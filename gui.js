@@ -68,7 +68,7 @@ sb, CommentMorph, CommandBlockMorph, BlockLabelPlaceHolderMorph, Audio*/
 
 // Global stuff ////////////////////////////////////////////////////////
 
-modules.gui = '2014-February-04';
+modules.gui = '2014-February-13';
 
 // Declarations
 
@@ -118,7 +118,7 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     ];
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.appModeColor = new Color();
-    IDE_Morph.prototype.scriptsPaneTexture = 'scriptsPaneTexture.gif';
+    IDE_Morph.prototype.scriptsPaneTexture = window.getAsset('scriptsPaneTexture.gif');
     IDE_Morph.prototype.padding = 5;
 
     SpriteIconMorph.prototype.labelColor
@@ -171,7 +171,7 @@ IDE_Morph.prototype.setFlatDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
 };
 
-IDE_Morph.prototype.setDefaultDesign();
+window.addLoadEvent(IDE_Morph.prototype.setDefaultDesign);
 
 // IDE_Morph instance creation:
 
@@ -270,6 +270,7 @@ IDE_Morph.prototype.openIn = function (world) {
             }
         }
     };
+
 
     this.reactToWorldResize(world.bounds);
 
@@ -408,7 +409,7 @@ IDE_Morph.prototype.createLogo = function () {
     }
 
     this.logo = new Morph();
-    this.logo.texture = 'snap_logo_sm.png';
+    this.logo.texture = getAsset('snap_logo_sm.png');
     this.logo.drawNew = function () {
         this.image = newCanvas(this.extent());
         var context = this.image.getContext('2d'),
@@ -459,6 +460,7 @@ IDE_Morph.prototype.createControlBar = function () {
         stageSizeButton,
         appModeButton,
         cloudButton,
+        infoMissionButton,
         x,
         colors = [
             this.groupColor,
@@ -479,69 +481,72 @@ IDE_Morph.prototype.createControlBar = function () {
     };
     this.add(this.controlBar);
 
-    //smallStageButton
-    button = new ToggleButtonMorph(
-        null, //colors,
-        myself, // the IDE is the target
-        'toggleStageSize',
-        [
-            new SymbolMorph('smallStage', 14),
-            new SymbolMorph('normalStage', 14)
-        ],
-        function () {  // query
-            return myself.isSmallStage;
-        }
-    );
+    if (world.role != "STUDENT") {
+        //hidding for student.
+        //smallStageButton
+        button = new ToggleButtonMorph(
+            null, //colors,
+            myself, // the IDE is the target
+            'toggleStageSize',
+            [
+                new SymbolMorph('smallStage', 14),
+                new SymbolMorph('normalStage', 14)
+            ],
+            function () {  // query
+                return myself.isSmallStage;
+            }
+        );
 
-    button.corner = 12;
-    button.color = colors[0];
-    button.highlightColor = colors[1];
-    button.pressColor = colors[2];
-    button.labelMinExtent = new Point(36, 18);
-    button.padding = 0;
-    button.labelShadowOffset = new Point(-1, -1);
-    button.labelShadowColor = colors[1];
-    button.labelColor = this.buttonLabelColor;
-    button.contrast = this.buttonContrast;
-    button.drawNew();
-    // button.hint = 'stage size\nsmall & normal';
-    button.fixLayout();
-    button.refresh();
-    stageSizeButton = button;
-    this.controlBar.add(stageSizeButton);
-    this.controlBar.stageSizeButton = button; // for refreshing
+        button.corner = 12;
+        button.color = colors[0];
+        button.highlightColor = colors[1];
+        button.pressColor = colors[2];
+        button.labelMinExtent = new Point(36, 18);
+        button.padding = 0;
+        button.labelShadowOffset = new Point(-1, -1);
+        button.labelShadowColor = colors[1];
+        button.labelColor = this.buttonLabelColor;
+        button.contrast = this.buttonContrast;
+        button.drawNew();
+        // button.hint = 'stage size\nsmall & normal';
+        button.fixLayout();
+        button.refresh();
+        stageSizeButton = button;
+        this.controlBar.add(stageSizeButton);
+        this.controlBar.stageSizeButton = button; // for refreshing
 
-    //appModeButton
-    button = new ToggleButtonMorph(
-        null, //colors,
-        myself, // the IDE is the target
-        'toggleAppMode',
-        [
-            new SymbolMorph('fullScreen', 14),
-            new SymbolMorph('normalScreen', 14)
-        ],
-        function () {  // query
-            return myself.isAppMode;
-        }
-    );
+        //appModeButton
+        button = new ToggleButtonMorph(
+            null, //colors,
+            myself, // the IDE is the target
+            'toggleAppMode',
+            [
+                new SymbolMorph('fullScreen', 14),
+                new SymbolMorph('normalScreen', 14)
+            ],
+            function () {  // query
+                return myself.isAppMode;
+            }
+        );
 
-    button.corner = 12;
-    button.color = colors[0];
-    button.highlightColor = colors[1];
-    button.pressColor = colors[2];
-    button.labelMinExtent = new Point(36, 18);
-    button.padding = 0;
-    button.labelShadowOffset = new Point(-1, -1);
-    button.labelShadowColor = colors[1];
-    button.labelColor = this.buttonLabelColor;
-    button.contrast = this.buttonContrast;
-    button.drawNew();
-    // button.hint = 'app & edit\nmodes';
-    button.fixLayout();
-    button.refresh();
-    appModeButton = button;
-    this.controlBar.add(appModeButton);
-    this.controlBar.appModeButton = appModeButton; // for refreshing
+        button.corner = 12;
+        button.color = colors[0];
+        button.highlightColor = colors[1];
+        button.pressColor = colors[2];
+        button.labelMinExtent = new Point(36, 18);
+        button.padding = 0;
+        button.labelShadowOffset = new Point(-1, -1);
+        button.labelShadowColor = colors[1];
+        button.labelColor = this.buttonLabelColor;
+        button.contrast = this.buttonContrast;
+        button.drawNew();
+        // button.hint = 'app & edit\nmodes';
+        button.fixLayout();
+        button.refresh();
+        appModeButton = button;
+        this.controlBar.add(appModeButton);
+        this.controlBar.appModeButton = appModeButton; // for refreshing
+    }
 
     // stopButton
     button = new PushButtonMorph(
@@ -668,11 +673,12 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(settingsButton);
     this.controlBar.settingsButton = settingsButton; // for menu positioning
 
-    // cloudButton
+        // infoMissionButton
     button = new PushButtonMorph(
         this,
-        'cloudMenu',
-        new SymbolMorph('cloud', 11)
+        'missionMenu',
+        new SymbolMorph('robot', 14)
+        //'\u2699'
     );
     button.corner = 12;
     button.color = colors[0];
@@ -685,11 +691,36 @@ IDE_Morph.prototype.createControlBar = function () {
     button.labelColor = this.buttonLabelColor;
     button.contrast = this.buttonContrast;
     button.drawNew();
-    // button.hint = 'cloud operations';
+    // button.hint = 'edit settings';
     button.fixLayout();
-    cloudButton = button;
-    this.controlBar.add(cloudButton);
-    this.controlBar.cloudButton = cloudButton; // for menu positioning
+    infoMissionButton = button;
+    this.controlBar.add(infoMissionButton);
+    this.controlBar.infoMissionButton = infoMissionButton; // for menu positioning
+
+    if(world.role != "STUDENT"){
+        // cloudButton
+        button = new PushButtonMorph(
+            this,
+            'cloudMenu',
+            new SymbolMorph('cloud', 11)
+        );
+        button.corner = 12;
+        button.color = colors[0];
+        button.highlightColor = colors[1];
+        button.pressColor = colors[2];
+        button.labelMinExtent = new Point(36, 18);
+        button.padding = 0;
+        button.labelShadowOffset = new Point(-1, -1);
+        button.labelShadowColor = colors[1];
+        button.labelColor = this.buttonLabelColor;
+        button.contrast = this.buttonContrast;
+        button.drawNew();
+        // button.hint = 'cloud operations';
+        button.fixLayout();
+        cloudButton = button;
+        this.controlBar.add(cloudButton);
+        this.controlBar.cloudButton = cloudButton; // for menu positioning
+    }
 
     this.controlBar.fixLayout = function () {
         x = this.right() - padding;
@@ -705,23 +736,23 @@ IDE_Morph.prototype.createControlBar = function () {
         x = myself.right() - (StageMorph.prototype.dimensions.x
             * (myself.isSmallStage ? myself.stageRatio : 1));
 
-        [stageSizeButton, appModeButton].forEach(
-            function (button) {
-                x += padding;
-                button.setCenter(myself.controlBar.center());
-                button.setLeft(x);
-                x += button.width();
-            }
-        );
-
         settingsButton.setCenter(myself.controlBar.center());
         settingsButton.setLeft(this.left());
 
-        cloudButton.setCenter(myself.controlBar.center());
-        cloudButton.setRight(settingsButton.left() - padding);
+        infoMissionButton.setCenter(myself.controlBar.center());
+        infoMissionButton.setRight(settingsButton.left() - padding);
 
+        //hiding cloud button for student
+        if (world.role != "STUDENT") {
+            cloudButton.setCenter(myself.controlBar.center());
+            cloudButton.setRight(infoMissionButton.left() - padding);
+        }
         projectButton.setCenter(myself.controlBar.center());
-        projectButton.setRight(cloudButton.left() - padding);
+        if (world.role != "STUDENT") {
+            projectButton.setRight(cloudButton.left() - padding);
+        } else {
+            projectButton.setRight(infoMissionButton.left() - padding);
+        }
 
         this.updateLabel();
     };
@@ -923,7 +954,6 @@ IDE_Morph.prototype.createSpriteBar = function () {
     this.spriteBar = new Morph();
     this.spriteBar.color = this.frameColor;
     this.add(this.spriteBar);
-
     function addRotationStyleButton(rotationStyle) {
         var colors = myself.rotationStyleColors,
             button;
@@ -974,18 +1004,20 @@ IDE_Morph.prototype.createSpriteBar = function () {
         }
         return button;
     }
-
-    addRotationStyleButton(1);
-    addRotationStyleButton(2);
-    addRotationStyleButton(0);
-    this.rotationStyleButtons = rotationStyleButtons;
-
+    if (world.role !== 'STUDENT') {
+        addRotationStyleButton(1);
+        addRotationStyleButton(2);
+        addRotationStyleButton(0);
+        this.rotationStyleButtons = rotationStyleButtons;
+    }
     thumbnail = new Morph();
     thumbnail.setExtent(thumbSize);
     thumbnail.image = this.currentSprite.thumbnail(thumbSize);
-    thumbnail.setPosition(
-        rotationStyleButtons[0].topRight().add(new Point(5, 3))
-    );
+    if (world.role !== 'STUDENT') {
+        thumbnail.setPosition(
+            rotationStyleButtons[0].topRight().add(new Point(5, 3))
+        );
+    }
     this.spriteBar.add(thumbnail);
 
     thumbnail.fps = 3;
@@ -1011,37 +1043,39 @@ IDE_Morph.prototype.createSpriteBar = function () {
         myself.currentSprite.setName(nameField.getValue());
     };
 
-    // padlock
-    padlock = new ToggleMorph(
-        'checkbox',
-        null,
-        function () {
-            myself.currentSprite.isDraggable =
-                !myself.currentSprite.isDraggable;
-        },
-        localize('draggable'),
-        function () {
-            return myself.currentSprite.isDraggable;
+    if (world.role !== 'STUDENT') {
+        // padlock
+        padlock = new ToggleMorph(
+            'checkbox',
+            null,
+            function () {
+                myself.currentSprite.isDraggable =
+                    !myself.currentSprite.isDraggable;
+            },
+            localize('draggable'),
+            function () {
+                return myself.currentSprite.isDraggable;
+            }
+        );
+        padlock.label.isBold = false;
+        padlock.label.setColor(this.buttonLabelColor);
+        padlock.color = tabColors[2];
+        padlock.highlightColor = tabColors[0];
+        padlock.pressColor = tabColors[1];
+
+        padlock.tick.shadowOffset = MorphicPreferences.isFlat ?
+                new Point() : new Point(-1, -1);
+        padlock.tick.shadowColor = new Color(); // black
+        padlock.tick.color = this.buttonLabelColor;
+        padlock.tick.isBold = false;
+        padlock.tick.drawNew();
+
+        padlock.setPosition(nameField.bottomLeft().add(2));
+        padlock.drawNew();
+        this.spriteBar.add(padlock);
+        if (this.currentSprite instanceof StageMorph) {
+            padlock.hide();
         }
-    );
-    padlock.label.isBold = false;
-    padlock.label.setColor(this.buttonLabelColor);
-    padlock.color = tabColors[2];
-    padlock.highlightColor = tabColors[0];
-    padlock.pressColor = tabColors[1];
-
-    padlock.tick.shadowOffset = MorphicPreferences.isFlat ?
-            new Point() : new Point(-1, -1);
-    padlock.tick.shadowColor = new Color(); // black
-    padlock.tick.color = this.buttonLabelColor;
-    padlock.tick.isBold = false;
-    padlock.tick.drawNew();
-
-    padlock.setPosition(nameField.bottomLeft().add(2));
-    padlock.drawNew();
-    this.spriteBar.add(padlock);
-    if (this.currentSprite instanceof StageMorph) {
-        padlock.hide();
     }
 
     // tab bar
@@ -1447,7 +1481,8 @@ IDE_Morph.prototype.setProjectName = function (string) {
 // IDE_Morph resizing
 
 IDE_Morph.prototype.setExtent = function (point) {
-    var minExt,
+    var padding = new Point(430, 110),
+        minExt,
         ext;
 
     // determine the minimum dimensions making sense for the current mode
@@ -1463,7 +1498,12 @@ IDE_Morph.prototype.setExtent = function (point) {
         }
     */
         minExt = this.isSmallStage ?
+                padding.add(StageMorph.prototype.dimensions.divideBy(2))
+                      : padding.add(StageMorph.prototype.dimensions);
+/*
+        minExt = this.isSmallStage ?
                 new Point(700, 350) : new Point(910, 490);
+*/
     }
     ext = point.max(minExt);
     IDE_Morph.uber.setExtent.call(this, ext);
@@ -1852,31 +1892,33 @@ IDE_Morph.prototype.userMenu = function () {
 IDE_Morph.prototype.snapMenu = function () {
     var menu,
         world = this.world();
-
-    menu = new MenuMorph(this);
-    menu.addItem('About...', 'aboutSnap');
-    menu.addLine();
-    menu.addItem(
-        'Reference manual',
-        function () {
-            window.open('help/SnapManual.pdf', 'SnapReferenceManual');
-        }
-    );
-    menu.addItem(
-        'Snap! website',
-        function () {
-            window.open('http://snap.berkeley.edu/', 'SnapWebsite');
-        }
-    );
-    menu.addItem(
-        'Download source',
-        function () {
-            window.open(
-                'http://snap.berkeley.edu/snapsource/snap.zip',
-                'SnapSource'
-            );
-        }
-    );
+    if(world.role != "STUDENT") {
+        //hidding some useless menu for student.
+        menu = new MenuMorph(this);
+        menu.addItem('About...', 'aboutSnap');
+        menu.addLine();
+        menu.addItem(
+            'Reference manual',
+            function () {
+                window.open('help/SnapManual.pdf', 'SnapReferenceManual');
+            }
+        );
+        menu.addItem(
+            'Snap! website',
+            function () {
+                window.open('http://snap.berkeley.edu/', 'SnapWebsite');
+            }
+        );
+        menu.addItem(
+            'Download source',
+            function () {
+                window.open(
+                    'http://snap.berkeley.edu/snapsource/snap.zip',
+                    'SnapSource'
+                );
+            }
+        );
+    }
     if (world.isDevMode) {
         menu.addLine();
         menu.addItem(
@@ -1900,138 +1942,140 @@ IDE_Morph.prototype.snapMenu = function () {
 };
 
 IDE_Morph.prototype.cloudMenu = function () {
-    var menu,
-        myself = this,
-        world = this.world(),
-        pos = this.controlBar.cloudButton.bottomLeft(),
-        shiftClicked = (world.currentKey === 16);
+    if (world.role != "STUDENT") {
+        //hidding cloud menu for student
+        var menu,
+            myself = this,
+            world = this.world(),
+            pos = this.controlBar.cloudButton.bottomLeft(),
+            shiftClicked = (world.currentKey === 16);
 
-    menu = new MenuMorph(this);
-    if (shiftClicked) {
-        menu.addItem(
-            'url...',
-            'setCloudURL',
-            null,
-            new Color(100, 0, 0)
-        );
-        menu.addLine();
-    }
-    if (!SnapCloud.username) {
-        menu.addItem(
-            'Login...',
-            'initializeCloud'
-        );
-        menu.addItem(
-            'Signup...',
-            'createCloudAccount'
-        );
-        menu.addItem(
-            'Reset Password...',
-            'resetCloudPassword'
-        );
-    } else {
-        menu.addItem(
-            'Logout',
-            'logout'
-        );
-        menu.addItem(
-            'Change Password...',
-            'changeCloudPassword'
-        );
-    }
-    if (shiftClicked) {
-        menu.addLine();
-        menu.addItem(
-            'export project media only...',
-            function () {
-                if (myself.projectName) {
-                    myself.exportProjectMedia(myself.projectName);
-                } else {
-                    myself.prompt('Export Project As...', function (name) {
-                        myself.exportProjectMedia(name);
-                    }, null, 'exportProject');
-                }
-            },
-            null,
-            this.hasChangedMedia ? new Color(100, 0, 0) : new Color(0, 100, 0)
-        );
-        menu.addItem(
-            'export project without media...',
-            function () {
-                if (myself.projectName) {
-                    myself.exportProjectNoMedia(myself.projectName);
-                } else {
-                    myself.prompt('Export Project As...', function (name) {
-                        myself.exportProjectNoMedia(name);
-                    }, null, 'exportProject');
-                }
-            },
-            null,
-            new Color(100, 0, 0)
-        );
-        menu.addItem(
-            'export project as cloud data...',
-            function () {
-                if (myself.projectName) {
-                    myself.exportProjectAsCloudData(myself.projectName);
-                } else {
-                    myself.prompt('Export Project As...', function (name) {
-                        myself.exportProjectAsCloudData(name);
-                    }, null, 'exportProject');
-                }
-            },
-            null,
-            new Color(100, 0, 0)
-        );
-        menu.addLine();
-        menu.addItem(
-            'open shared project from cloud...',
-            function () {
-                myself.prompt('Author name…', function (usr) {
-                    myself.prompt('Project name...', function (prj) {
-                        var id = 'Username=' +
-                            encodeURIComponent(usr.toLowerCase()) +
-                            '&ProjectName=' +
-                            encodeURIComponent(prj);
-                        myself.showMessage(
-                            'Fetching project\nfrom the cloud...'
-                        );
-                        SnapCloud.getPublicProject(
-                            id,
-                            function (projectData) {
-                                var msg;
-                                if (!Process.prototype.isCatchingErrors) {
-                                    window.open(
-                                        'data:text/xml,' + projectData
-                                    );
-                                }
-                                myself.nextSteps([
-                                    function () {
-                                        msg = myself.showMessage(
-                                            'Opening project...'
+        menu = new MenuMorph(this);
+        if (shiftClicked) {
+            menu.addItem(
+                'url...',
+                'setCloudURL',
+                null,
+                new Color(100, 0, 0)
+            );
+            menu.addLine();
+        }
+        if (!SnapCloud.username) {
+            menu.addItem(
+                'Login...',
+                'initializeCloud'
+            );
+            menu.addItem(
+                'Signup...',
+                'createCloudAccount'
+            );
+            menu.addItem(
+                'Reset Password...',
+                'resetCloudPassword'
+            );
+        } else {
+            menu.addItem(
+                'Logout',
+                'logout'
+            );
+            menu.addItem(
+                'Change Password...',
+                'changeCloudPassword'
+            );
+        }
+        if (shiftClicked) {
+            menu.addLine();
+            menu.addItem(
+                'export project media only...',
+                function () {
+                    if (myself.projectName) {
+                        myself.exportProjectMedia(myself.projectName);
+                    } else {
+                        myself.prompt('Export Project As...', function (name) {
+                            myself.exportProjectMedia(name);
+                        }, null, 'exportProject');
+                    }
+                },
+                null,
+                this.hasChangedMedia ? new Color(100, 0, 0) : new Color(0, 100, 0)
+            );
+            menu.addItem(
+                'export project without media...',
+                function () {
+                    if (myself.projectName) {
+                        myself.exportProjectNoMedia(myself.projectName);
+                    } else {
+                        myself.prompt('Export Project As...', function (name) {
+                            myself.exportProjectNoMedia(name);
+                        }, null, 'exportProject');
+                    }
+                },
+                null,
+                new Color(100, 0, 0)
+            );
+            menu.addItem(
+                'export project as cloud data...',
+                function () {
+                    if (myself.projectName) {
+                        myself.exportProjectAsCloudData(myself.projectName);
+                    } else {
+                        myself.prompt('Export Project As...', function (name) {
+                            myself.exportProjectAsCloudData(name);
+                        }, null, 'exportProject');
+                    }
+                },
+                null,
+                new Color(100, 0, 0)
+            );
+            menu.addLine();
+            menu.addItem(
+                'open shared project from cloud...',
+                function () {
+                    myself.prompt('Author name…', function (usr) {
+                        myself.prompt('Project name...', function (prj) {
+                            var id = 'Username=' +
+                                encodeURIComponent(usr.toLowerCase()) +
+                                '&ProjectName=' +
+                                encodeURIComponent(prj);
+                            myself.showMessage(
+                                'Fetching project\nfrom the cloud...'
+                            );
+                            SnapCloud.getPublicProject(
+                                id,
+                                function (projectData) {
+                                    var msg;
+                                    if (!Process.prototype.isCatchingErrors) {
+                                        window.open(
+                                            'data:text/xml,' + projectData
                                         );
-                                    },
-                                    function () {
-                                        myself.rawOpenCloudDataString(
-                                            projectData
-                                        );
-                                    },
-                                    function () {
-                                        msg.destroy();
                                     }
-                                ]);
-                            },
-                            myself.cloudError()
-                        );
-
+                                    myself.nextSteps([
+                                        function () {
+                                            msg = myself.showMessage(
+                                                'Opening project...'
+                                            );
+                                        },
+                                        function () {
+                                            myself.rawOpenCloudDataString(
+                                                projectData
+                                            );
+                                        },
+                                        function () {
+                                            msg.destroy();
+                                        }
+                                    ]);
+                                },
+                                myself.cloudError()
+                            );
+                        }, null, 'project');
                     }, null, 'project');
-                }, null, 'project');
-            },
-            null,
-            new Color(100, 0, 0)
-        );
+                },
+                null,
+                new Color(100, 0, 0)
+            );
+        }
+        menu.popup(world, pos);
     }
-    menu.popup(world, pos);
 };
 
 IDE_Morph.prototype.settingsMenu = function () {
@@ -2061,75 +2105,165 @@ IDE_Morph.prototype.settingsMenu = function () {
         'Zoom blocks...',
         'userSetBlocksScale'
     );
-    menu.addLine();
-    addPreference(
-        'Blurred shadows',
-        'toggleBlurredShadows',
-        useBlurredShadows,
-        'uncheck to use solid drop\nshadows and highlights',
-        'check to use blurred drop\nshadows and highlights',
-        true
-    );
-    addPreference(
-        'Zebra coloring',
-        'toggleZebraColoring',
-        BlockMorph.prototype.zebraContrast,
-        'uncheck to disable alternating\ncolors for nested block',
-        'check to enable alternating\ncolors for nested blocks',
-        true
-    );
-    addPreference(
-        'Dynamic input labels',
-        'toggleDynamicInputLabels',
-        SyntaxElementMorph.prototype.dynamicInputLabels,
-        'uncheck to disable dynamic\nlabels for variadic inputs',
-        'check to enable dynamic\nlabels for variadic inputs',
-        true
-    );
-    addPreference(
-        'Prefer empty slot drops',
-        'togglePreferEmptySlotDrops',
-        ScriptsMorph.prototype.isPreferringEmptySlots,
-        'uncheck to allow dropped\nreporters to kick out others',
-        'settings menu prefer empty slots hint',
-        true
-    );
-    addPreference(
-        'Long form input dialog',
-        'toggleLongFormInputDialog',
-        InputSlotDialogMorph.prototype.isLaunchingExpanded,
-        'uncheck to use the input\ndialog in short form',
-        'check to always show slot\ntypes in the input dialog'
-    );
-    addPreference(
-        'Plain prototype labels',
-        'togglePlainPrototypeLabels',
-        BlockLabelPlaceHolderMorph.prototype.plainLabel,
-        'uncheck to always show (+) symbols\nin block prototype labels',
-        'check to hide (+) symbols\nin block prototype labels'
-    );
-    addPreference(
-        'Virtual keyboard',
-        'toggleVirtualKeyboard',
-        MorphicPreferences.useVirtualKeyboard,
-        'uncheck to disable\nvirtual keyboard support\nfor mobile devices',
-        'check to enable\nvirtual keyboard support\nfor mobile devices',
-        true
-    );
-    addPreference(
-        'Input sliders',
-        'toggleInputSliders',
-        MorphicPreferences.useSliderForInput,
-        'uncheck to disable\ninput sliders for\nentry fields',
-        'check to enable\ninput sliders for\nentry fields'
-    );
-    if (MorphicPreferences.useSliderForInput) {
+
+    if (world.role != "STUDENT") {
+        //hidding some useless menu for student
+        menu.addLine();
         addPreference(
-            'Execute on slider change',
-            'toggleSliderExecute',
-            InputSlotMorph.prototype.executeOnSliderEdit,
-            'uncheck to supress\nrunning scripts\nwhen moving the slider',
-            'check to run\nthe edited script\nwhen moving the slider'
+            'Blurred shadows',
+            'toggleBlurredShadows',
+            useBlurredShadows,
+            'uncheck to use solid drop\nshadows and highlights',
+            'check to use blurred drop\nshadows and highlights',
+            true
+        );
+        addPreference(
+            'Zebra coloring',
+            'toggleZebraColoring',
+            BlockMorph.prototype.zebraContrast,
+            'uncheck to disable alternating\ncolors for nested block',
+            'check to enable alternating\ncolors for nested blocks',
+            true
+        );
+        addPreference(
+            'Dynamic input labels',
+            'toggleDynamicInputLabels',
+            SyntaxElementMorph.prototype.dynamicInputLabels,
+            'uncheck to disable dynamic\nlabels for variadic inputs',
+            'check to enable dynamic\nlabels for variadic inputs',
+            true
+        );
+        addPreference(
+            'Prefer empty slot drops',
+            'togglePreferEmptySlotDrops',
+            ScriptsMorph.prototype.isPreferringEmptySlots,
+            'uncheck to allow dropped\nreporters to kick out others',
+            'settings menu prefer empty slots hint',
+            true
+        );
+        addPreference(
+            'Long form input dialog',
+            'toggleLongFormInputDialog',
+            InputSlotDialogMorph.prototype.isLaunchingExpanded,
+            'uncheck to use the input\ndialog in short form',
+            'check to always show slot\ntypes in the input dialog'
+        );
+        addPreference(
+            'Virtual keyboard',
+            'toggleVirtualKeyboard',
+            MorphicPreferences.useVirtualKeyboard,
+            'uncheck to disable\nvirtual keyboard support\nfor mobile devices',
+            'check to enable\nvirtual keyboard support\nfor mobile devices',
+            true
+        );
+        addPreference(
+            'Input sliders',
+            'toggleInputSliders',
+            MorphicPreferences.useSliderForInput,
+            'uncheck to disable\ninput sliders for\nentry fields',
+            'check to enable\ninput sliders for\nentry fields'
+        );
+        if (MorphicPreferences.useSliderForInput) {
+            addPreference(
+                'Execute on slider change',
+                'toggleSliderExecute',
+                InputSlotMorph.prototype.executeOnSliderEdit,
+                'uncheck to supress\nrunning scripts\nwhen moving the slider',
+                'check to run\nthe edited script\nwhen moving the slider'
+            );
+        }
+        addPreference(
+            'Clicking sound',
+            function () {
+                BlockMorph.prototype.toggleSnapSound();
+                if (BlockMorph.prototype.snapSound) {
+                    myself.saveSetting('click', true);
+                } else {
+                    myself.removeSetting('click');
+                }
+            },
+            BlockMorph.prototype.snapSound,
+            'uncheck to turn\nblock clicking\nsound off',
+            'check to turn\nblock clicking\nsound on'
+        );
+        addPreference(
+            'Animations',
+            function () {myself.isAnimating = !myself.isAnimating; },
+            myself.isAnimating,
+            'uncheck to disable\nIDE animations',
+            'check to enable\nIDE animations',
+            true
+        );
+        addPreference(
+            'Turbo mode',
+            'toggleFastTracking',
+            this.stage.isFastTracked,
+            'uncheck to run scripts\nat normal speed',
+            'check to prioritize\nscript execution'
+        );
+        addPreference(
+            'Rasterize SVGs',
+            function () {
+                MorphicPreferences.rasterizeSVGs =
+                    !MorphicPreferences.rasterizeSVGs;
+            },
+            MorphicPreferences.rasterizeSVGs,
+            'uncheck for smooth\nscaling of vector costumes',
+            'check to rasterize\nSVGs on import',
+            true
+        );
+        addPreference(
+            'Flat design',
+            function () {
+                if (MorphicPreferences.isFlat) {
+                    return myself.defaultDesign();
+                }
+                myself.flatDesign();
+            },
+            MorphicPreferences.isFlat,
+            'uncheck for default\nGUI design',
+            'check for alternative\nGUI design',
+            false
+        );
+        addPreference(
+            'Sprite Nesting',
+            function () {
+                SpriteMorph.prototype.enableNesting =
+                    !SpriteMorph.prototype.enableNesting;
+            },
+            SpriteMorph.prototype.enableNesting,
+            'uncheck to disable\nsprite composition',
+            'check to enable\nsprite composition',
+            true
+        );
+        menu.addLine(); // everything below this line is stored in the project
+        addPreference(
+            'Thread safe scripts',
+            function () {stage.isThreadSafe = !stage.isThreadSafe; },
+            this.stage.isThreadSafe,
+            'uncheck to allow\nscript reentrance',
+            'check to disallow\nscript reentrance'
+        );
+        addPreference(
+            'Prefer smooth animations',
+            'toggleVariableFrameRate',
+            StageMorph.prototype.frameRate,
+            'uncheck for greater speed\nat variable frame rates',
+            'check for smooth, predictable\nanimations across computers'
+        );
+        addPreference(
+            'Codification support',
+            function () {
+                StageMorph.prototype.enableCodeMapping =
+                    !StageMorph.prototype.enableCodeMapping;
+                myself.currentSprite.blocksCache.variables = null;
+                myself.currentSprite.paletteCache.variables = null;
+                myself.refreshPalette();
+            },
+            StageMorph.prototype.enableCodeMapping,
+            'uncheck to disable\nblock to text mapping features',
+            'check for block\nto text mapping features',
+            false
         );
     }
     addPreference(
@@ -2235,6 +2369,28 @@ IDE_Morph.prototype.settingsMenu = function () {
         'check for block\nto text mapping features',
         false
     );
+    menu.popup(world, pos);
+};
+
+IDE_Morph.prototype.missionMenu = function () {
+    var menu,
+        myself = this,
+        world = this.world(),
+        pos = this.controlBar.infoMissionButton.bottomLeft();
+
+    menu = new MenuMorph(this);
+    menu.addItem(localize('Description'), 'descriptionMission');
+    menu.addItem(localize('Save project on server'),
+        function () { myself.exportProjectToServer(); }
+    )
+    menu.addItem(
+        localize('All missions list'),'allMissionList',
+        localize('Redirection on the list of all missions\nDon\'t forget to save before')
+    )
+    menu.addItem(
+        localize('Resset the mission'), 'ressetMission',
+        localize('Drop the current mission and open a fresh one')
+    )
     menu.popup(world, pos);
 };
 
@@ -2346,52 +2502,66 @@ IDE_Morph.prototype.projectMenu = function () {
         'show global custom block definitions as XML\nin a new browser window'
     );
 
-    menu.addLine();
-    menu.addItem(
-        'Import tools',
-        function () {
-            myself.droppedText(
-                myself.getURL(
-                    'http://snap.berkeley.edu/snapsource/tools.xml'
-                ),
-                'tools'
-            );
-        },
-        'load the official library of\npowerful blocks'
-    );
-    menu.addItem(
-        'Libraries...',
-        function () {
-            // read a list of libraries from an external file,
-            var libMenu = new MenuMorph(this, 'Import library'),
-                libUrl = 'http://snap.berkeley.edu/snapsource/libraries/' +
-                    'LIBRARIES';
+    // interface clean pour les student
+    if(world.role != "STUDENT"){
+        menu.addLine();
+        menu.addItem(
+            'Import tools',
+            function () {
+                myself.droppedText(
+                    myself.getURL(
+                        'http://snap.berkeley.edu/snapsource/tools.xml'
+                    ),
+                    'tools'
+                );
+            },
+            'load the official library of\npowerful blocks'
+        );
+        menu.addItem(
+            'Libraries...',
+            function () {
+                // read a list of libraries from an external file,
+                var libMenu = new MenuMorph(this, 'Import library'),
+                    libUrl = 'http://snap.berkeley.edu/snapsource/libraries/' +
+                        'LIBRARIES';
 
-            function loadLib(name) {
-                var url = 'http://snap.berkeley.edu/snapsource/libraries/'
-                        + name
-                        + '.xml';
-                myself.droppedText(myself.getURL(url), name);
-            }
-
-            myself.getURL(libUrl).split('\n').forEach(function (line) {
-                if (line.length > 0) {
-                    libMenu.addItem(
-                        line.substring(line.indexOf('\t') + 1),
-                        function () {
-                            loadLib(
-                                line.substring(0, line.indexOf('\t'))
-                            );
-                        }
-                    );
+                function loadLib(name) {
+                    var url = 'http://snap.berkeley.edu/snapsource/libraries/'
+                            + name
+                            + '.xml';
+                    myself.droppedText(myself.getURL(url), name);
                 }
-            });
 
-            libMenu.popup(world, pos);
-        },
-        'Select categories of additional blocks to add to this project.'
-    );
-
+                myself.getURL(libUrl).split('\n').forEach(function (line) {
+                    if (line.length > 0) {
+                        libMenu.addItem(
+                            line.substring(line.indexOf('\t') + 1),
+                            function () {
+                                loadLib(
+                                    line.substring(0, line.indexOf('\t'))
+                                );
+                            }
+                        );
+                    }
+                });
+                libMenu.popup(world, pos);
+            },
+            'Select categories of additional blocks to add to this project.'
+        );
+        menu.addLine();
+        menu.addItem(
+            'Import tools',
+            function () {
+                myself.droppedText(
+                    myself.getURL(
+                        'http://snap.berkeley.edu/snapsource/tools.xml'
+                    ),
+                    'tools'
+                );
+            },
+            'load the official library of\npowerful blocks'
+        );
+    }
     menu.addItem(
         localize(graphicsName) + '...',
         function () {
@@ -2403,7 +2573,7 @@ IDE_Morph.prototype.projectMenu = function () {
                 );
 
             function loadCostume(name) {
-                var url = dir + '/' + name,
+                var url = window.getAsset(dir + '/' + name),
                     img = new Image();
                 img.onload = function () {
                     var canvas = newCanvas(new Point(img.width, img.height));
@@ -2451,29 +2621,13 @@ IDE_Morph.prototype.projectMenu = function () {
         },
         'Select a sound from the media library'
     );
-
     menu.popup(world, pos);
 };
 
 IDE_Morph.prototype.getCostumesList = function (dirname) {
-    var dir,
-        costumes = [];
+    var costumes;
 
-    dir = this.getURL(dirname);
-    dir.split('\n').forEach(
-        function (line) {
-            var startIdx = line.search(new RegExp('href="[^./?].*"')),
-                endIdx,
-                name;
-
-            if (startIdx > 0) {
-                name = line.substring(startIdx + 6);
-                endIdx = name.search(new RegExp('"'));
-                name = name.substring(0, endIdx);
-                costumes.push(name);
-            }
-        }
-    );
+    costumes = window.getAsset(dirname);
     costumes.sort(function (x, y) {
         return x < y ? -1 : 1;
     });
@@ -2481,6 +2635,53 @@ IDE_Morph.prototype.getCostumesList = function (dirname) {
 };
 
 // IDE_Morph menu actions
+
+IDE_Morph.prototype.descriptionMission = function () {
+    jQuery("#missionModal").modal('toggle')
+};
+
+IDE_Morph.prototype.allMissionList = function () {
+    var dialog = new DialogBoxMorph().withKey('Sauvegarde'),
+        myself = this,
+        world = this.world(),
+        text = localize('Do you want to save befor exit?'),
+        btn1;
+
+    dialog.inform(localize('Save'), text, world);
+
+    dialog.addButton(function(){
+            myself.exportProjectToServer();
+            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
+        },
+        localize('Yes'));
+    dialog.addButton(function(){
+            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
+        },
+        localize('non'));
+    btn1 = dialog.buttons.children[0];
+    btn1.hide();
+    dialog.fixLayout();
+    dialog.drawNew();
+},
+
+
+IDE_Morph.prototype.ressetMission = function () {
+    //Load a new project by dropping the old one
+    //myself = this;
+    var request = new XMLHttpRequest(),
+        myself = this,
+        mission_id = window.location.pathname.split('/')[2],
+        url = '/initialization_program_missions/' + mission_id;
+    try {
+        request.open('PUT', url, false);
+        var token = document.getElementsByName("csrf-token").item(0).content;
+        request.setRequestHeader("X-CSRF-Token", token);
+        request.send();
+    } catch (err) {
+        myself.showMessage(err);
+    }
+    location.reload(true);
+}
 
 IDE_Morph.prototype.aboutSnap = function () {
     var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations,
@@ -2695,6 +2896,7 @@ IDE_Morph.prototype.newProject = function () {
     this.globalVariables = new VariableFrame();
     this.currentSprite = new SpriteMorph(this.globalVariables);
     this.sprites = new List([this.currentSprite]);
+    StageMorph.prototype.dimensions = new Point(480, 360);
     StageMorph.prototype.hiddenPrimitives = {};
     StageMorph.prototype.codeMappings = {};
     StageMorph.prototype.codeHeaders = {};
@@ -2799,6 +3001,54 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
         }
     }
 };
+IDE_Morph.prototype.exportProjectToServer = function () {
+    var menu, str, jsonData, url;
+
+    function putURL(url, jsondata, new_file) {
+        try {
+            var request = new XMLHttpRequest({responseType: "json"});
+            if (new_file) {
+                request.open('POST', url, true);
+            } else {
+                request.open('PUT', url, true);
+            }
+            var token = document.getElementsByName("csrf-token").item(0).content;
+            request.setRequestHeader("X-CSRF-Token", token);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.setRequestHeader("Accept", "application/json")
+            request.send(JSON.stringify(jsondata));
+            if (request.status === 200) {
+                if (new_file) {
+                    history.pushState(null, "page 2", "bar.html"); //TODO
+                }
+                return request.responseText;
+            }
+            throw new Error('unable to retrieve ' + url);
+        } catch (err) {
+            return;
+        }
+    }
+    try {
+        str = this.serializer.serialize(this.stage);
+        var ressource = document.location.pathname.split('/');
+        if (ressource[1] === "projects" && ressource[2] === "new") {
+            jsonData = {project:{name: "TODO", source_code: str}};
+            url = document.location.protocol + "//"+document.location.host + "/projects";
+            putURL(url, jsonData, true);
+        } else {
+            url = document.location.protocol + "//"+document.location.host + document.location.pathname;
+            if (ressource[1] === "projects") {
+                jsonData = {project:{name: "TODO",source_code: str }};
+            } else {
+                jsonData = {program:{source_code: str }};
+            }
+            putURL(url, jsonData, false);
+        }
+        this.showMessage('Exported!', 1);
+    } catch (err) {
+        this.showMessage('Export failed: ' + err);
+    }
+}
 
 IDE_Morph.prototype.exportGlobalBlocks = function () {
     if (this.stage.globalBlocks.length > 0) {
@@ -3185,8 +3435,9 @@ IDE_Morph.prototype.toggleSliderExecute = function () {
 };
 
 IDE_Morph.prototype.toggleAppMode = function (appMode) {
-    var world = this.world(),
-        elements = [
+    var world = this.world();
+    if(world.role != "STUDENT"){
+        var elements = [
             this.logo,
             this.controlBar.cloudButton,
             this.controlBar.projectButton,
@@ -3199,6 +3450,19 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
             this.palette,
             this.categories
         ];
+    } else {
+        var elements = [
+            this.logo,
+            this.controlBar.projectButton,
+            this.controlBar.settingsButton,
+            this.corral,
+            this.corralBar,
+            this.spriteEditor,
+            this.spriteBar,
+            this.palette,
+            this.categories
+        ];
+    }
 
     this.isAppMode = isNil(appMode) ? !this.isAppMode : appMode;
 
@@ -3313,7 +3577,7 @@ IDE_Morph.prototype.languageMenu = function () {
 
 IDE_Morph.prototype.setLanguage = function (lang, callback) {
     var translation = document.getElementById('language'),
-        src = 'lang-' + lang + '.js',
+        src = window.getAsset('lang-' + lang + '.js'),
         myself = this;
     SnapTranslator.unload();
     if (translation) {
@@ -3462,6 +3726,64 @@ IDE_Morph.prototype.setBlocksScale = function (num) {
     this.fixLayout();
     this.openProjectString(projectData);
     this.saveSetting('zoom', num);
+};
+
+// IDE_Morph stage size manipulation
+
+IDE_Morph.prototype.userSetStageSize = function () {
+    new DialogBoxMorph(
+        this,
+        this.setStageExtent,
+        this
+    ).promptVector(
+        "Stage size",
+        StageMorph.prototype.dimensions,
+        new Point(480, 360),
+        'Stage width',
+        'Stage height',
+        this.world(),
+        null, // pic
+        null // msg
+    );
+};
+
+IDE_Morph.prototype.setStageExtent = function (aPoint) {
+    var myself = this,
+        world = this.world(),
+        ext = aPoint.max(new Point(480, 180));
+
+    function zoom() {
+        myself.step = function () {
+            var delta = ext.subtract(
+                StageMorph.prototype.dimensions
+            ).divideBy(2);
+            if (delta.abs().lt(new Point(5, 5))) {
+                StageMorph.prototype.dimensions = ext;
+                delete myself.step;
+            } else {
+                StageMorph.prototype.dimensions =
+                    StageMorph.prototype.dimensions.add(delta);
+            }
+            myself.stage.setExtent(StageMorph.prototype.dimensions);
+            myself.stage.clearPenTrails();
+            myself.fixLayout();
+            this.setExtent(world.extent());
+        };
+    }
+
+    this.stageRatio = 1;
+    this.isSmallStage = false;
+    this.controlBar.stageSizeButton.refresh();
+    this.setExtent(world.extent());
+    if (this.isAnimating) {
+        zoom();
+    } else {
+        StageMorph.prototype.dimensions = ext;
+        this.stage.setExtent(StageMorph.prototype.dimensions);
+        this.stage.clearPenTrails();
+        this.fixLayout();
+        this.setExtent(world.extent());
+    }
 };
 
 // IDE_Morph cloud interface
@@ -5066,7 +5388,6 @@ SpriteIconMorph.prototype.userMenu = function () {
     }
     if (!(this.object instanceof SpriteMorph)) {return null; }
     menu.addItem("show", 'showSpriteOnStage');
-    menu.addLine();
     menu.addItem("duplicate", 'duplicateSprite');
     menu.addItem("delete", 'removeSprite');
     menu.addLine();
