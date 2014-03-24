@@ -2387,6 +2387,10 @@ IDE_Morph.prototype.missionMenu = function () {
         localize('All missions list'),'allMissionList',
         localize('Redirection on the list of all missions\nDon\'t forget to save before')
     )
+    menu.addItem(
+        localize('Resset the mission'), 'ressetMission',
+        localize('Drop the current mission and open a fresh one')
+    )
     menu.popup(world, pos);
 };
 
@@ -2659,6 +2663,25 @@ IDE_Morph.prototype.allMissionList = function () {
     dialog.fixLayout();
     dialog.drawNew();
 },
+
+
+IDE_Morph.prototype.ressetMission = function () {
+    //Load a new project by dropping the old one
+    //myself = this;
+    var request = new XMLHttpRequest(),
+        myself = this,
+        mission_id = window.location.pathname.split('/')[2],
+        url = '/initialization_program_missions/' + mission_id;
+    try {
+        request.open('PUT', url, false);
+        var token = document.getElementsByName("csrf-token").item(0).content;
+        request.setRequestHeader("X-CSRF-Token", token);
+        request.send();
+    } catch (err) {
+        myself.showMessage(err);
+    }
+    location.reload(true);
+}
 
 IDE_Morph.prototype.aboutSnap = function () {
     var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations,
