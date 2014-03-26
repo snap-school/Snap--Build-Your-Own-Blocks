@@ -2388,7 +2388,7 @@ IDE_Morph.prototype.missionMenu = function () {
         localize('Redirection on the list of all missions\nDon\'t forget to save before')
     )
     menu.addItem(
-        localize('Resset the mission'), 'ressetMission',
+        localize('Reset the mission'), 'resetMission',
         localize('Drop the current mission and open a fresh one')
     )
     menu.popup(world, pos);
@@ -2665,13 +2665,13 @@ IDE_Morph.prototype.allMissionList = function () {
 },
 
 
-IDE_Morph.prototype.ressetMission = function () {
+IDE_Morph.prototype.resetMission = function () {
     //Load a new project by dropping the old one
     //myself = this;
     var request = new XMLHttpRequest(),
         myself = this,
-        mission_id = window.location.pathname.split('/')[2],
-        url = '/initialization_program_missions/' + mission_id;
+        program_id = window.location.pathname.split('/')[2],
+        url = '/initialization_program_missions/' + program_id;
     try {
         request.open('PUT', url, false);
         var token = document.getElementsByName("csrf-token").item(0).content;
