@@ -670,7 +670,7 @@ SnapTranslator.dict.fr = {
     'Do you want to save befor exit?':
         'Voullez vous Sauvegarder avant de quitter?',
     'Reset the mission':
-        'Réinitialiser la mission'
+        'Réinitialiser la mission',
 
     // settings menu
     'Language...':
