@@ -2381,7 +2381,15 @@ IDE_Morph.prototype.missionMenu = function () {
     menu = new MenuMorph(this);
     menu.addItem(localize('Description'), 'descriptionMission');
     menu.addItem(localize('Save project on server'),
-        function () { myself.exportProjectToServer(); }
+        function () {
+            if (myself.projectName) {
+                myself.exportProjectToServer();
+            } else {
+                myself.prompt('Export Project As...', function (name) {
+                    myself.exportProjectToServer(name);
+                }, null, 'exportProject');
+            }
+        }
     )
     menu.addItem(
         localize('All missions list'),'allMissionList',
@@ -2645,12 +2653,14 @@ IDE_Morph.prototype.allMissionList = function () {
 
     dialog.inform(localize('Save'), text, world);
 
-    dialog.addButton(function(){
+    dialog.addButton(
+        function(){
             myself.exportProjectToServer();
             window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
         },
         localize('Yes'));
-    dialog.addButton(function(){
+    dialog.addButton(
+        function(){
             window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
         },
         localize('non'));
@@ -2978,16 +2988,16 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
         }
     }
 };
-IDE_Morph.prototype.exportProjectToServer = function () {
+IDE_Morph.prototype.exportProjectToServer = function (name) {
     var menu, str, jsonData, url;
 
     function putURL(url, jsondata, new_file) {
         try {
             var request = new XMLHttpRequest({responseType: "json"});
             if (new_file) {
-                request.open('POST', url, true);
+                request.open('POST', url, false);
             } else {
-                request.open('PUT', url, true);
+                request.open('PUT', url, false);
             }
             var token = document.getElementsByName("csrf-token").item(0).content;
             request.setRequestHeader("X-CSRF-Token", token);
@@ -2996,7 +3006,9 @@ IDE_Morph.prototype.exportProjectToServer = function () {
             request.send(JSON.stringify(jsondata));
             if (request.status === 200) {
                 if (new_file) {
-                    history.pushState(null, "page 2", "bar.html"); //TODO
+                    alert(request.responseText);
+                    responseJSON = JSON.parse(request.responseText);
+                    history.pushState(null, "Projet : "+responseJSON["name"], responseJSON["id"]);
                 }
                 return request.responseText;
             }
@@ -3004,6 +3016,9 @@ IDE_Morph.prototype.exportProjectToServer = function () {
         } catch (err) {
             return;
         }
+    }
+    if (name) {
+        this.setProjectName(name);
     }
     try {
         str = this.serializer.serialize(this.stage);
