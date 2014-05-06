@@ -2379,7 +2379,9 @@ IDE_Morph.prototype.missionMenu = function () {
         pos = this.controlBar.infoMissionButton.bottomLeft();
 
     menu = new MenuMorph(this);
-    menu.addItem(localize('Description'), 'descriptionMission');
+    if (document.location.pathname.split('/')[1] != "projects") {
+        menu.addItem(localize('Description'), 'descriptionMission');
+    }
     menu.addItem(localize('Save project on server'),
         function () {
             if (myself.projectName) {
@@ -2391,14 +2393,25 @@ IDE_Morph.prototype.missionMenu = function () {
             }
         }
     )
-    menu.addItem(
-        localize('All missions list'),'allMissionList',
-        localize('Redirection on the list of all missions\nDon\'t forget to save before')
-    )
-    menu.addItem(
-        localize('Reset the mission'), 'resetMission',
-        localize('Drop the current mission and open a fresh one')
-    )
+    if (document.location.pathname.split('/')[1] != "projects") {
+        menu.addItem(
+            localize('All missions list'), function() {
+                myself.allExerciceList('missions');
+            },
+            localize('Redirection on the list of all missions')
+        )
+        menu.addItem(
+            localize('Reset the mission'), 'resetMission',
+            localize('Drop the current mission and open a fresh one')
+        )
+    } else {
+        menu.addItem(
+            localize('All Projects list'), function() {
+                myself.allExerciceList('projects');
+            },
+            localize('Redirection on the list of all projects')
+        )
+    }
     menu.popup(world, pos);
 };
 
@@ -2648,7 +2661,7 @@ IDE_Morph.prototype.descriptionMission = function () {
     jQuery("#missionModal").modal('toggle')
 };
 
-IDE_Morph.prototype.allMissionList = function () {
+IDE_Morph.prototype.allExerciceList = function (exercice) {
     var dialog = new DialogBoxMorph().withKey('Sauvegarde'),
         myself = this,
         world = this.world(),
@@ -2660,12 +2673,12 @@ IDE_Morph.prototype.allMissionList = function () {
     dialog.addButton(
         function(){
             myself.exportProjectToServer();
-            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
+            window.location.href = window.location.protocol+'//'+window.location.host+'/'+exercice;
         },
         localize('Yes'));
     dialog.addButton(
         function(){
-            window.location.href = window.location.protocol+'//'+window.location.host+'/missions';
+            window.location.href = window.location.protocol+'//'+window.location.host+'/'+exercice;
         },
         localize('non'));
     btn1 = dialog.buttons.children[0];
@@ -3029,7 +3042,6 @@ IDE_Morph.prototype.exportProjectToServer = function (name) {
             request.send(JSON.stringify(jsondata));
             if (request.status === 200) {
                 if (new_file) {
-                    alert(request.responseText);
                     responseJSON = JSON.parse(request.responseText);
                     history.pushState(null, "Projet : "+responseJSON["name"], responseJSON["id"]);
                 }
