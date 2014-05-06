@@ -2384,7 +2384,7 @@ IDE_Morph.prototype.missionMenu = function () {
     }
     menu.addItem(localize('Save project on server'),
         function () {
-            if (myself.projectName) {
+            if (myself.projectName && myself.projectName != "Untitled") {
                 myself.exportProjectToServer();
             } else {
                 myself.prompt('Export Project As...', function (name) {
@@ -2672,7 +2672,13 @@ IDE_Morph.prototype.allExerciceList = function (exercice) {
 
     dialog.addButton(
         function(){
-            myself.exportProjectToServer();
+            if (myself.projectName && myself.projectName != "Untitled") {
+                myself.exportProjectToServer();
+            } else {
+                myself.prompt('Export Project As...', function (name) {
+                    myself.exportProjectToServer(name);
+                }, null, 'exportProject');
+            }
             window.location.href = window.location.protocol+'//'+window.location.host+'/'+exercice;
         },
         localize('Yes'));
