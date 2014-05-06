@@ -459,7 +459,6 @@ IDE_Morph.prototype.createControlBar = function () {
         settingsButton,
         stageSizeButton,
         appModeButton,
-        cloudButton,
         infoMissionButton,
         x,
         colors = [
@@ -697,31 +696,6 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(infoMissionButton);
     this.controlBar.infoMissionButton = infoMissionButton; // for menu positioning
 
-    if(world.role != "STUDENT"){
-        // cloudButton
-        button = new PushButtonMorph(
-            this,
-            'cloudMenu',
-            new SymbolMorph('cloud', 11)
-        );
-        button.corner = 12;
-        button.color = colors[0];
-        button.highlightColor = colors[1];
-        button.pressColor = colors[2];
-        button.labelMinExtent = new Point(36, 18);
-        button.padding = 0;
-        button.labelShadowOffset = new Point(-1, -1);
-        button.labelShadowColor = colors[1];
-        button.labelColor = this.buttonLabelColor;
-        button.contrast = this.buttonContrast;
-        button.drawNew();
-        // button.hint = 'cloud operations';
-        button.fixLayout();
-        cloudButton = button;
-        this.controlBar.add(cloudButton);
-        this.controlBar.cloudButton = cloudButton; // for menu positioning
-    }
-
     this.controlBar.fixLayout = function () {
         x = this.right() - padding;
         [stopButton, pauseButton, startButton].forEach(
@@ -736,23 +710,23 @@ IDE_Morph.prototype.createControlBar = function () {
         x = myself.right() - (StageMorph.prototype.dimensions.x
             * (myself.isSmallStage ? myself.stageRatio : 1));
 
+        [stageSizeButton, appModeButton].forEach(
+            function (button) {
+                x += padding;
+                button.setCenter(myself.controlBar.center());
+                button.setLeft(x);
+                x += button.width();
+            }
+        );
+
         settingsButton.setCenter(myself.controlBar.center());
         settingsButton.setLeft(this.left());
 
         infoMissionButton.setCenter(myself.controlBar.center());
         infoMissionButton.setRight(settingsButton.left() - padding);
 
-        //hiding cloud button for student
-        if (world.role != "STUDENT") {
-            cloudButton.setCenter(myself.controlBar.center());
-            cloudButton.setRight(infoMissionButton.left() - padding);
-        }
         projectButton.setCenter(myself.controlBar.center());
-        if (world.role != "STUDENT") {
-            projectButton.setRight(cloudButton.left() - padding);
-        } else {
-            projectButton.setRight(infoMissionButton.left() - padding);
-        }
+        projectButton.setRight(infoMissionButton.left() - padding);
 
         this.updateLabel();
     };
@@ -1939,143 +1913,6 @@ IDE_Morph.prototype.snapMenu = function () {
         );
     }
     menu.popup(world, this.logo.bottomLeft());
-};
-
-IDE_Morph.prototype.cloudMenu = function () {
-    if (world.role != "STUDENT") {
-        //hidding cloud menu for student
-        var menu,
-            myself = this,
-            world = this.world(),
-            pos = this.controlBar.cloudButton.bottomLeft(),
-            shiftClicked = (world.currentKey === 16);
-
-        menu = new MenuMorph(this);
-        if (shiftClicked) {
-            menu.addItem(
-                'url...',
-                'setCloudURL',
-                null,
-                new Color(100, 0, 0)
-            );
-            menu.addLine();
-        }
-        if (!SnapCloud.username) {
-            menu.addItem(
-                'Login...',
-                'initializeCloud'
-            );
-            menu.addItem(
-                'Signup...',
-                'createCloudAccount'
-            );
-            menu.addItem(
-                'Reset Password...',
-                'resetCloudPassword'
-            );
-        } else {
-            menu.addItem(
-                'Logout',
-                'logout'
-            );
-            menu.addItem(
-                'Change Password...',
-                'changeCloudPassword'
-            );
-        }
-        if (shiftClicked) {
-            menu.addLine();
-            menu.addItem(
-                'export project media only...',
-                function () {
-                    if (myself.projectName) {
-                        myself.exportProjectMedia(myself.projectName);
-                    } else {
-                        myself.prompt('Export Project As...', function (name) {
-                            myself.exportProjectMedia(name);
-                        }, null, 'exportProject');
-                    }
-                },
-                null,
-                this.hasChangedMedia ? new Color(100, 0, 0) : new Color(0, 100, 0)
-            );
-            menu.addItem(
-                'export project without media...',
-                function () {
-                    if (myself.projectName) {
-                        myself.exportProjectNoMedia(myself.projectName);
-                    } else {
-                        myself.prompt('Export Project As...', function (name) {
-                            myself.exportProjectNoMedia(name);
-                        }, null, 'exportProject');
-                    }
-                },
-                null,
-                new Color(100, 0, 0)
-            );
-            menu.addItem(
-                'export project as cloud data...',
-                function () {
-                    if (myself.projectName) {
-                        myself.exportProjectAsCloudData(myself.projectName);
-                    } else {
-                        myself.prompt('Export Project As...', function (name) {
-                            myself.exportProjectAsCloudData(name);
-                        }, null, 'exportProject');
-                    }
-                },
-                null,
-                new Color(100, 0, 0)
-            );
-            menu.addLine();
-            menu.addItem(
-                'open shared project from cloud...',
-                function () {
-                    myself.prompt('Author name…', function (usr) {
-                        myself.prompt('Project name...', function (prj) {
-                            var id = 'Username=' +
-                                encodeURIComponent(usr.toLowerCase()) +
-                                '&ProjectName=' +
-                                encodeURIComponent(prj);
-                            myself.showMessage(
-                                'Fetching project\nfrom the cloud...'
-                            );
-                            SnapCloud.getPublicProject(
-                                id,
-                                function (projectData) {
-                                    var msg;
-                                    if (!Process.prototype.isCatchingErrors) {
-                                        window.open(
-                                            'data:text/xml,' + projectData
-                                        );
-                                    }
-                                    myself.nextSteps([
-                                        function () {
-                                            msg = myself.showMessage(
-                                                'Opening project...'
-                                            );
-                                        },
-                                        function () {
-                                            myself.rawOpenCloudDataString(
-                                                projectData
-                                            );
-                                        },
-                                        function () {
-                                            msg.destroy();
-                                        }
-                                    ]);
-                                },
-                                myself.cloudError()
-                            );
-                        }, null, 'project');
-                    }, null, 'project');
-                },
-                null,
-                new Color(100, 0, 0)
-            );
-        }
-        menu.popup(world, pos);
-    }
 };
 
 IDE_Morph.prototype.settingsMenu = function () {
@@ -3472,7 +3309,6 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
     if(world.role != "STUDENT"){
         var elements = [
             this.logo,
-            this.controlBar.cloudButton,
             this.controlBar.projectButton,
             this.controlBar.settingsButton,
             this.controlBar.stageSizeButton,
