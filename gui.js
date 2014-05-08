@@ -480,72 +480,69 @@ IDE_Morph.prototype.createControlBar = function () {
     };
     this.add(this.controlBar);
 
-    if (world.role != "STUDENT") {
-        //hidding for student.
-        //smallStageButton
-        button = new ToggleButtonMorph(
-            null, //colors,
-            myself, // the IDE is the target
-            'toggleStageSize',
-            [
-                new SymbolMorph('smallStage', 14),
-                new SymbolMorph('normalStage', 14)
-            ],
-            function () {  // query
-                return myself.isSmallStage;
-            }
-        );
+    //smallStageButton
+    button = new ToggleButtonMorph(
+        null, //colors,
+        myself, // the IDE is the target
+        'toggleStageSize',
+        [
+            new SymbolMorph('smallStage', 14),
+            new SymbolMorph('normalStage', 14)
+        ],
+        function () {  // query
+            return myself.isSmallStage;
+        }
+    );
 
-        button.corner = 12;
-        button.color = colors[0];
-        button.highlightColor = colors[1];
-        button.pressColor = colors[2];
-        button.labelMinExtent = new Point(36, 18);
-        button.padding = 0;
-        button.labelShadowOffset = new Point(-1, -1);
-        button.labelShadowColor = colors[1];
-        button.labelColor = this.buttonLabelColor;
-        button.contrast = this.buttonContrast;
-        button.drawNew();
-        // button.hint = 'stage size\nsmall & normal';
-        button.fixLayout();
-        button.refresh();
-        stageSizeButton = button;
-        this.controlBar.add(stageSizeButton);
-        this.controlBar.stageSizeButton = button; // for refreshing
+    button.corner = 12;
+    button.color = colors[0];
+    button.highlightColor = colors[1];
+    button.pressColor = colors[2];
+    button.labelMinExtent = new Point(36, 18);
+    button.padding = 0;
+    button.labelShadowOffset = new Point(-1, -1);
+    button.labelShadowColor = colors[1];
+    button.labelColor = this.buttonLabelColor;
+    button.contrast = this.buttonContrast;
+    button.drawNew();
+    // button.hint = 'stage size\nsmall & normal';
+    button.fixLayout();
+    button.refresh();
+    stageSizeButton = button;
+    this.controlBar.add(stageSizeButton);
+    this.controlBar.stageSizeButton = button; // for refreshing
 
-        //appModeButton
-        button = new ToggleButtonMorph(
-            null, //colors,
-            myself, // the IDE is the target
-            'toggleAppMode',
-            [
-                new SymbolMorph('fullScreen', 14),
-                new SymbolMorph('normalScreen', 14)
-            ],
-            function () {  // query
-                return myself.isAppMode;
-            }
-        );
+    //appModeButton
+    button = new ToggleButtonMorph(
+        null, //colors,
+        myself, // the IDE is the target
+        'toggleAppMode',
+        [
+            new SymbolMorph('fullScreen', 14),
+            new SymbolMorph('normalScreen', 14)
+        ],
+        function () {  // query
+            return myself.isAppMode;
+        }
+    );
 
-        button.corner = 12;
-        button.color = colors[0];
-        button.highlightColor = colors[1];
-        button.pressColor = colors[2];
-        button.labelMinExtent = new Point(36, 18);
-        button.padding = 0;
-        button.labelShadowOffset = new Point(-1, -1);
-        button.labelShadowColor = colors[1];
-        button.labelColor = this.buttonLabelColor;
-        button.contrast = this.buttonContrast;
-        button.drawNew();
-        // button.hint = 'app & edit\nmodes';
-        button.fixLayout();
-        button.refresh();
-        appModeButton = button;
-        this.controlBar.add(appModeButton);
-        this.controlBar.appModeButton = appModeButton; // for refreshing
-    }
+    button.corner = 12;
+    button.color = colors[0];
+    button.highlightColor = colors[1];
+    button.pressColor = colors[2];
+    button.labelMinExtent = new Point(36, 18);
+    button.padding = 0;
+    button.labelShadowOffset = new Point(-1, -1);
+    button.labelShadowColor = colors[1];
+    button.labelColor = this.buttonLabelColor;
+    button.contrast = this.buttonContrast;
+    button.drawNew();
+    // button.hint = 'app & edit\nmodes';
+    button.fixLayout();
+    button.refresh();
+    appModeButton = button;
+    this.controlBar.add(appModeButton);
+    this.controlBar.appModeButton = appModeButton; // for refreshing
 
     // stopButton
     button = new PushButtonMorph(
@@ -3306,32 +3303,18 @@ IDE_Morph.prototype.toggleSliderExecute = function () {
 
 IDE_Morph.prototype.toggleAppMode = function (appMode) {
     var world = this.world();
-    if(world.role != "STUDENT"){
-        var elements = [
-            this.logo,
-            this.controlBar.projectButton,
-            this.controlBar.settingsButton,
-            this.controlBar.stageSizeButton,
-            this.corral,
-            this.corralBar,
-            this.spriteEditor,
-            this.spriteBar,
-            this.palette,
-            this.categories
-        ];
-    } else {
-        var elements = [
-            this.logo,
-            this.controlBar.projectButton,
-            this.controlBar.settingsButton,
-            this.corral,
-            this.corralBar,
-            this.spriteEditor,
-            this.spriteBar,
-            this.palette,
-            this.categories
-        ];
-    }
+    var elements = [
+        this.logo,
+        this.controlBar.projectButton,
+        this.controlBar.settingsButton,
+        this.controlBar.stageSizeButton,
+        this.corral,
+        this.corralBar,
+        this.spriteEditor,
+        this.spriteBar,
+        this.palette,
+        this.categories
+    ];
 
     this.isAppMode = isNil(appMode) ? !this.isAppMode : appMode;
 
