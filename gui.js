@@ -2229,8 +2229,8 @@ IDE_Morph.prototype.missionMenu = function () {
     )
     if (document.location.pathname.split('/')[1] != "projects") {
         menu.addItem(
-            localize('All missions list'), function() {
-                myself.allExerciceList('missions');
+            localize('All chapters list'), function() {
+                myself.allExerciceList('chapters');
             },
             localize('Redirection on the list of all missions')
         )
