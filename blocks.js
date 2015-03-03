@@ -4899,11 +4899,11 @@ ScriptsMorph.prototype.userMenu = function () {
     }
     if (world.role !== 'STUDENT') {
         menu.addItem(
-            'show all',
+            localize('show all'),
             'showall'
         );
         menu.addItem(
-            'hide all',
+            localize('hide all'),
             'hideall'
         );
     }

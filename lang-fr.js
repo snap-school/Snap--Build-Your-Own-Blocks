@@ -663,12 +663,14 @@ SnapTranslator.dict.fr = {
         'Description',
     'Save project on server':
         'Sauvegarde du project sur le serveur',
-    'All missions list':
-        'Liste des missions',
+    'Exported!':
+        'Sauvé!'
+    'All chapters list':
+        'Liste des chapitres',
     'Redirection on the list of all missions\nDon\'t forget to save before':
         'Retour sur la liste des missions \n n\'oublie pas de sauver avant',
     'Do you want to save befor exit?':
-        'Voullez vous Sauvegarder avant de quitter?',
+        'Voulez vous Sauvegarder avant de quitter?',
     'Reset the mission':
         'Réinitialiser la mission',
 
@@ -761,6 +763,11 @@ SnapTranslator.dict.fr = {
         'Aide',
 
     // blocks:
+
+    'hide all':
+        'tout cacher',
+    'show all':
+        'tout montrer',
     'help...':
         'Aide...',
     'duplicate':
