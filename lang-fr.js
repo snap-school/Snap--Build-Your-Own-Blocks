@@ -672,7 +672,7 @@ SnapTranslator.dict.fr = {
     'Do you want to save befor exit?':
         'Voulez vous Sauvegarder avant de quitter?',
     'Reset the mission':
-        'Réinitialiser la mission',
+        'R\u00E9initialiser la mission',
 
     // settings menu
     'Language...':
@@ -736,7 +736,7 @@ SnapTranslator.dict.fr = {
     'uncheck for default\nGUI design':
 	'D\u00E9cocher pour le style classique d\interface',
     'Thread safe scripts':
-        'Scripts réentrants',
+        'Scripts r\u00E9entrants',
     'check to disallow\nscript reentrance':
         'Cocher pour interdire\n la r\u00E9entrance des scripts\n'
 	  +'et les ex\u00E9cuter s\u00E9par\u00E9ment',
