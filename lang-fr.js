@@ -1,27 +1,27 @@
 /*
 
-	lang-de.js
+    lang-de.js
 
-	German translation for SNAP!
+    German translation for SNAP!
 
-	written by Jens Mönig
+    written by Jens Mönig
 
-	Copyright (C) 2012 by Jens Mönig
+    Copyright (C) 2014 by Jens Mönig
 
-	This file is part of Snap!.
+    This file is part of Snap!.
 
-	Snap! is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as
-	published by the Free Software Foundation, either version 3 of
-	the License, or (at your option) any later version.
+    Snap! is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
@@ -663,12 +663,14 @@ SnapTranslator.dict.fr = {
         'Description',
     'Save project on server':
         'Sauvegarde du project sur le serveur',
-    'All missions list':
-        'Liste des missions',
+    'Exported!':
+        'Sauv\u00E9!',
+    'All chapters list':
+        'Liste des chapitres',
     'Redirection on the list of all missions\nDon\'t forget to save before':
         'Retour sur la liste des missions \n n\'oublie pas de sauver avant',
     'Do you want to save befor exit?':
-        'Voullez vous Sauvegarder avant de quitter?',
+        'Voulez vous Sauvegarder avant de quitter?',
     'Reset the mission':
         'Réinitialiser la mission',
 
@@ -761,6 +763,11 @@ SnapTranslator.dict.fr = {
         'Aide',
 
     // blocks:
+
+    'hide all':
+        'tout cacher',
+    'show all':
+        'tout montrer',
     'help...':
         'Aide...',
     'duplicate':
