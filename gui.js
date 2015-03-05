@@ -2847,7 +2847,7 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
                 window.open('data:text/'
                     + (plain ? 'plain,' + str : 'xml,' + str));
                 menu.destroy();
-                this.showMessage('Exported!', 1);
+                this.showMessage(localize('Exported!'), 1);
             } catch (err) {
                 this.showMessage('Export failed: ' + err);
             }
@@ -2860,7 +2860,7 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
             window.open('data:text/'
                 + (plain ? 'plain,' + str : 'xml,' + str));
             menu.destroy();
-            this.showMessage('Exported!', 1);
+            this.showMessage(localize('Exported!'), 1);
         }
     }
 };
@@ -3429,8 +3429,8 @@ IDE_Morph.prototype.languageMenu = function () {
 
 IDE_Morph.prototype.setLanguage = function (lang, callback) {
     var translation = document.getElementById('language'),
-        src = window.getAsset('lang-' + lang + '.js'),
-        myself = this;
+    src = window.getAsset('lang-' + lang + '.js'),
+    myself = this;
     SnapTranslator.unload();
     if (translation) {
         document.head.removeChild(translation);
