@@ -415,6 +415,8 @@ SnapTranslator.dict.fr = {
       // control:
     'when %greenflag clicked':
         'Quand %greenflag est press\u00E9',
+    'when %greenflag clicked (without broadcasting)':
+        'Quand %greenflag est press\u00E9 (sans envoyer de \"fini\")',
     'when %keyHat key pressed':
         'Quand %keyHat est press\u00E9',
     'when I am clicked':
