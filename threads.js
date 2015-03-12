@@ -222,7 +222,11 @@ ThreadManager.prototype.removeTerminatedProcesses = function () {
     this.processes.forEach(function (proc) {
         if (!proc.isRunning() && !proc.errorFlag && !proc.isDead) {
             proc.topBlock.removeHighlight();
-
+            if (proc.topBlock.blockSpec === localize('when %greenflag clicked')){
+                proc.doBroadcast("fini").forEach(function (remproc){
+                    remaining.push(remproc);
+                });
+            }
             if (proc.prompter) {
                 proc.prompter.destroy();
                 if (proc.homeContext.receiver.stopTalking) {
