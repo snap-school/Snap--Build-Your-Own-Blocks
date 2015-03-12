@@ -415,6 +415,8 @@ SnapTranslator.dict.fr = {
       // control:
     'when %greenflag clicked':
         'Quand %greenflag est press\u00E9',
+    'when %greenflag clicked (without broadcasting)':
+        'Quand %greenflag est press\u00E9 (sans envoyer de \"fini\")',
     'when %keyHat key pressed':
         'Quand %keyHat est press\u00E9',
     'when I am clicked':
@@ -672,7 +674,7 @@ SnapTranslator.dict.fr = {
     'Do you want to save befor exit?':
         'Voulez vous Sauvegarder avant de quitter?',
     'Reset the mission':
-        'R\u00E9initialiser la mission',
+        'Réinitialiser la mission',
 
     // settings menu
     'Language...':
@@ -736,7 +738,7 @@ SnapTranslator.dict.fr = {
     'uncheck for default\nGUI design':
 	'D\u00E9cocher pour le style classique d\interface',
     'Thread safe scripts':
-        'Scripts r\u00E9entrants',
+        'Scripts réentrants',
     'check to disallow\nscript reentrance':
         'Cocher pour interdire\n la r\u00E9entrance des scripts\n'
 	  +'et les ex\u00E9cuter s\u00E9par\u00E9ment',

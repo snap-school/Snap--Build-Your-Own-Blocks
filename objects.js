@@ -513,6 +513,11 @@ SpriteMorph.prototype.initBlocks = function () {
         receiveGo: {
             type: 'hat',
             category: 'control',
+            spec: 'when %greenflag clicked (without broadcasting)'
+        },
+        receiveGoThenBroadcastFinished: {
+            type: 'hat',
+            category: 'control',
             spec: 'when %greenflag clicked'
         },
         receiveKey: {
@@ -1664,6 +1669,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
     } else if (cat === 'control') {
 
         blocks.push(block('receiveGo'));
+        blocks.push(block('receiveGoThenBroadcastFinished'));
         blocks.push(block('receiveKey'));
         blocks.push(block('receiveClick'));
         blocks.push(block('receiveMessage'));
@@ -3034,7 +3040,7 @@ SpriteMorph.prototype.allHatBlocksFor = function (message) {
                 event = morph.inputs()[0].evaluate();
                 return event === message || (event instanceof Array);
             }
-            if (morph.selector === 'receiveGo') {
+            if (morph.selector === 'receiveGo' || morph.selector === 'receiveGoThenBroadcastFinished') {
                 return message === '__shout__go__';
             }
             if (morph.selector === 'receiveOnClone') {
@@ -4389,6 +4395,7 @@ StageMorph.prototype.blockTemplates = function (category) {
     } else if (cat === 'control') {
 
         blocks.push(block('receiveGo'));
+        blocks.push(block('receiveGoThenBroadcastFinished'));
         blocks.push(block('receiveKey'));
         blocks.push(block('receiveClick'));
         blocks.push(block('receiveMessage'));
