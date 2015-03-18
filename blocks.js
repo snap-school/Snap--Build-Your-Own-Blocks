@@ -1858,6 +1858,7 @@ BlockMorph.prototype.init = function () {
     this.comment = null; // optional "sticky" comment morph
 
     this.hidden = false; // must be hidden
+    this.wasHidden = false; // Flag for getting out of full-screen not showing hidden blocks
 
     // not to be persisted:
     this.instantiationSpec = null; // spec to set upon fullCopy() of template
