@@ -1867,18 +1867,18 @@ BlockMorph.prototype.init = function () {
     BlockMorph.uber.init.call(this);
     this.color = new Color(0, 17, 173);
     this.hide = function() {
-    if(this.hidden)
-        this.wasHidden = true;
-    else
-        BlockMorph.prototype.hide.call(this);
-        this.hidden = true;
+        if(!this.isVisible)
+            this.wasHidden = true;
+        else{
+            BlockMorph.uber.hide.call(this);
+        }
     }
     this.show = function(){
-    if(this.wasHidden)
-        this.wasHidden = false;
-    else
-        BlockMorph.prototype.show.call(this);
-        this.hidden = false;
+        if(this.wasHidden)
+            this.wasHidden = false;
+        else{
+            BlockMorph.uber.show.call(this);
+        }
     }
 };
 
