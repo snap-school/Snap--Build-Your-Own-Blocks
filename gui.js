@@ -511,6 +511,7 @@ IDE_Morph.prototype.createControlBar = function () {
     stageSizeButton = button;
     this.controlBar.add(stageSizeButton);
     this.controlBar.stageSizeButton = button; // for refreshing
+    
 
     //appModeButton
     button = new ToggleButtonMorph(
@@ -755,6 +756,14 @@ IDE_Morph.prototype.createControlBar = function () {
         this.label.setCenter(this.center());
         this.label.setLeft(this.settingsButton.right() + padding);
     };
+
+
+    if(world.role == "STUDENT") {
+        //hidding some useless buttons for student.
+        this.controlBar.projectButton.hide();
+        this.controlBar.stageSizeButton.hide();
+        this.controlBar.appModeButton.hide();
+    }
 };
 
 IDE_Morph.prototype.createCategories = function () {
@@ -1098,7 +1107,9 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.labelColor = this.buttonLabelColor;
     tab.drawNew();
     tab.fixLayout();
-    tabBar.add(tab);
+    tabBar.add(tab);    
+    if (world.role == "STUDENT")
+        tab.hide();
 
     tab = new TabMorph(
         tabColors,
@@ -1118,6 +1129,9 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.drawNew();
     tab.fixLayout();
     tabBar.add(tab);
+    if (world.role == "STUDENT")
+        tab.hide();
+
 
     tabBar.fixLayout();
     tabBar.children.forEach(function (each) {
@@ -1265,6 +1279,8 @@ IDE_Morph.prototype.createCorralBar = function () {
         this.corralBar.left() + padding + newbutton.width() + padding
     );
     this.corralBar.add(paintbutton);
+    if (world.role == "STUDENT")
+        this.corralBar.hide();
 };
 
 IDE_Morph.prototype.createCorral = function () {
@@ -1863,9 +1879,9 @@ IDE_Morph.prototype.userMenu = function () {
 IDE_Morph.prototype.snapMenu = function () {
     var menu,
         world = this.world();
+    menu = new MenuMorph(this);
     if(world.role != "STUDENT") {
         //hidding some useless menu for student.
-        menu = new MenuMorph(this);
         menu.addItem('About...', 'aboutSnap');
         menu.addLine();
         menu.addItem(
@@ -2099,110 +2115,110 @@ IDE_Morph.prototype.settingsMenu = function () {
             'check for block\nto text mapping features',
             false
         );
+        addPreference(
+            'Clicking sound',
+            function () {
+                BlockMorph.prototype.toggleSnapSound();
+                if (BlockMorph.prototype.snapSound) {
+                    myself.saveSetting('click', true);
+                } else {
+                    myself.removeSetting('click');
+                }
+            },
+            BlockMorph.prototype.snapSound,
+            'uncheck to turn\nblock clicking\nsound off',
+            'check to turn\nblock clicking\nsound on'
+        );
+        addPreference(
+            'Animations',
+            function () {myself.isAnimating = !myself.isAnimating; },
+            myself.isAnimating,
+            'uncheck to disable\nIDE animations',
+            'check to enable\nIDE animations',
+            true
+        );
+        addPreference(
+            'Turbo mode',
+            'toggleFastTracking',
+            this.stage.isFastTracked,
+            'uncheck to run scripts\nat normal speed',
+            'check to prioritize\nscript execution'
+        );
+        addPreference(
+            'Rasterize SVGs',
+            function () {
+                MorphicPreferences.rasterizeSVGs =
+                    !MorphicPreferences.rasterizeSVGs;
+            },
+            MorphicPreferences.rasterizeSVGs,
+            'uncheck for smooth\nscaling of vector costumes',
+            'check to rasterize\nSVGs on import',
+            true
+        );
+        addPreference(
+            'Flat design',
+            function () {
+                if (MorphicPreferences.isFlat) {
+                    return myself.defaultDesign();
+                }
+                myself.flatDesign();
+            },
+            MorphicPreferences.isFlat,
+            'uncheck for default\nGUI design',
+            'check for alternative\nGUI design',
+            false
+        );
+        addPreference(
+            'Sprite Nesting',
+            function () {
+                SpriteMorph.prototype.enableNesting =
+                    !SpriteMorph.prototype.enableNesting;
+            },
+            SpriteMorph.prototype.enableNesting,
+            'uncheck to disable\nsprite composition',
+            'check to enable\nsprite composition',
+            true
+        );
+        menu.addLine(); // everything below this line is stored in the project
+        addPreference(
+            'Thread safe scripts',
+            function () {stage.isThreadSafe = !stage.isThreadSafe; },
+            this.stage.isThreadSafe,
+            'uncheck to allow\nscript reentrance',
+            'check to disallow\nscript reentrance'
+        );
+        addPreference(
+            'Prefer smooth animations',
+            'toggleVariableFrameRate',
+            StageMorph.prototype.frameRate,
+            'uncheck for greater speed\nat variable frame rates',
+            'check for smooth, predictable\nanimations across computers'
+        );
+        addPreference(
+            'Flat line ends',
+            function () {
+                SpriteMorph.prototype.useFlatLineEnds =
+                    !SpriteMorph.prototype.useFlatLineEnds;
+            },
+            SpriteMorph.prototype.useFlatLineEnds,
+            'uncheck for round ends of lines',
+            'check for flat ends of lines'
+        );
+        addPreference(
+            'Codification support',
+            function () {
+                StageMorph.prototype.enableCodeMapping =
+                    !StageMorph.prototype.enableCodeMapping;
+                myself.currentSprite.blocksCache.variables = null;
+                myself.currentSprite.paletteCache.variables = null;
+                myself.refreshPalette();
+            },
+            StageMorph.prototype.enableCodeMapping,
+            'uncheck to disable\nblock to text mapping features',
+            'check for block\nto text mapping features',
+            false
+        );
     }
-    addPreference(
-        'Clicking sound',
-        function () {
-            BlockMorph.prototype.toggleSnapSound();
-            if (BlockMorph.prototype.snapSound) {
-                myself.saveSetting('click', true);
-            } else {
-                myself.removeSetting('click');
-            }
-        },
-        BlockMorph.prototype.snapSound,
-        'uncheck to turn\nblock clicking\nsound off',
-        'check to turn\nblock clicking\nsound on'
-    );
-    addPreference(
-        'Animations',
-        function () {myself.isAnimating = !myself.isAnimating; },
-        myself.isAnimating,
-        'uncheck to disable\nIDE animations',
-        'check to enable\nIDE animations',
-        true
-    );
-    addPreference(
-        'Turbo mode',
-        'toggleFastTracking',
-        this.stage.isFastTracked,
-        'uncheck to run scripts\nat normal speed',
-        'check to prioritize\nscript execution'
-    );
-    addPreference(
-        'Rasterize SVGs',
-        function () {
-            MorphicPreferences.rasterizeSVGs =
-                !MorphicPreferences.rasterizeSVGs;
-        },
-        MorphicPreferences.rasterizeSVGs,
-        'uncheck for smooth\nscaling of vector costumes',
-        'check to rasterize\nSVGs on import',
-        true
-    );
-    addPreference(
-        'Flat design',
-        function () {
-            if (MorphicPreferences.isFlat) {
-                return myself.defaultDesign();
-            }
-            myself.flatDesign();
-        },
-        MorphicPreferences.isFlat,
-        'uncheck for default\nGUI design',
-        'check for alternative\nGUI design',
-        false
-    );
-    addPreference(
-        'Sprite Nesting',
-        function () {
-            SpriteMorph.prototype.enableNesting =
-                !SpriteMorph.prototype.enableNesting;
-        },
-        SpriteMorph.prototype.enableNesting,
-        'uncheck to disable\nsprite composition',
-        'check to enable\nsprite composition',
-        true
-    );
-    menu.addLine(); // everything below this line is stored in the project
-    addPreference(
-        'Thread safe scripts',
-        function () {stage.isThreadSafe = !stage.isThreadSafe; },
-        this.stage.isThreadSafe,
-        'uncheck to allow\nscript reentrance',
-        'check to disallow\nscript reentrance'
-    );
-    addPreference(
-        'Prefer smooth animations',
-        'toggleVariableFrameRate',
-        StageMorph.prototype.frameRate,
-        'uncheck for greater speed\nat variable frame rates',
-        'check for smooth, predictable\nanimations across computers'
-    );
-    addPreference(
-        'Flat line ends',
-        function () {
-            SpriteMorph.prototype.useFlatLineEnds =
-                !SpriteMorph.prototype.useFlatLineEnds;
-        },
-        SpriteMorph.prototype.useFlatLineEnds,
-        'uncheck for round ends of lines',
-        'check for flat ends of lines'
-    );
-    addPreference(
-        'Codification support',
-        function () {
-            StageMorph.prototype.enableCodeMapping =
-                !StageMorph.prototype.enableCodeMapping;
-            myself.currentSprite.blocksCache.variables = null;
-            myself.currentSprite.paletteCache.variables = null;
-            myself.refreshPalette();
-        },
-        StageMorph.prototype.enableCodeMapping,
-        'uncheck to disable\nblock to text mapping features',
-        'check for block\nto text mapping features',
-        false
-    );
     menu.popup(world, pos);
 };
 
@@ -3315,6 +3331,8 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         this.palette,
         this.categories
     ];
+    var controlBar = this.controlBar;
+    var corralBar = this.corralBar;
 
     this.isAppMode = isNil(appMode) ? !this.isAppMode : appMode;
 
@@ -3335,7 +3353,17 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         this.setColor(this.backgroundColor);
         this.controlBar.setColor(this.frameColor);
         elements.forEach(function (e) {
-            e.show();
+            if(world.role == "STUDENT"){
+                if (e != controlBar.projectButton && 
+                    e != controlBar.settingsButton && 
+                    e != controlBar.stageSizeButton &&
+                    e != corralBar)
+                {
+                    e.show();
+                }
+            }
+            else
+                e.show();
         });
         this.stage.setScale(1);
         // show all hidden dialogs

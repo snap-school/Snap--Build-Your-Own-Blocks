@@ -803,7 +803,7 @@ SnapTranslator.dict.fr = {
 
     // scripting area
     'clean up':
-        'effacer',
+        'R\u00E9arranger',
     'arrange scripts\nvertically':
         'arrange scripts\nvertically',
     'add comment':
