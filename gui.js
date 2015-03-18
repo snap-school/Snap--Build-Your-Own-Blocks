@@ -3324,18 +3324,7 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         this.controlBar.setColor(this.color);
         this.controlBar.appModeButton.refresh();
         elements.forEach(function (e) {
-            if (e instanceof BlockMorph){
-                if (e.hidden){
-                    e.wasHidden = true;
-                }
-                else{
-                    e.hide()
-                } 
-            }
-            else
-            {
-                e.hide();
-            }
+            e.hide();
         });
         world.children.forEach(function (morph) {
             if (morph instanceof DialogBoxMorph) {
@@ -3346,18 +3335,7 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         this.setColor(this.backgroundColor);
         this.controlBar.setColor(this.frameColor);
         elements.forEach(function (e) {
-            if (e instanceof BlockMorph){
-                if (!e.wasHidden){
-                    e.show();
-                }
-                else{
-                    e.wasHidden = false;
-                } 
-            }
-            else
-            {
-                e.show();
-            }
+            e.show();
         });
         this.stage.setScale(1);
         // show all hidden dialogs

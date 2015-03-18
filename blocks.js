@@ -1866,6 +1866,20 @@ BlockMorph.prototype.init = function () {
 
     BlockMorph.uber.init.call(this);
     this.color = new Color(0, 17, 173);
+    this.hide = function() {
+    if(this.hidden)
+        this.wasHidden = true;
+    else
+        BlockMorph.prototype.hide.call(this);
+        this.hidden = true;
+    }
+    this.show = function(){
+    if(this.wasHidden)
+        this.wasHidden = false;
+    else
+        BlockMorph.prototype.show.call(this);
+        this.hidden = false;
+    }
 };
 
 BlockMorph.prototype.receiver = function () {
