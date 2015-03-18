@@ -3325,7 +3325,7 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         this.controlBar.appModeButton.refresh();
         elements.forEach(function (e) {
             if (e instanceof BlockMorph){
-                if (!e.hidden){
+                if (e.hidden){
                     e.wasHidden = true;
                 }
                 else{
