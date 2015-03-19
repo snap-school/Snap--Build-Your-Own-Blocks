@@ -4937,7 +4937,7 @@ ScriptsMorph.prototype.userMenu = function () {
         'exportScriptsPicture',
         'open a new window\nwith a picture of all scripts'
     );
-    if (ide) {
+    if (ide && world.role != "STUDENT") {
         menu.addLine();
         menu.addItem(
             'make a block...',
