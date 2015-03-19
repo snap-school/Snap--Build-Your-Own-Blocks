@@ -2248,8 +2248,14 @@ IDE_Morph.prototype.missionMenu = function () {
     )
     if (document.location.pathname.split('/')[1] != "projects") {
         menu.addItem(
+            localize('Get to the next mission'), function() {
+                myself.goToURL(world.nextExerciceURL);
+            },
+            localize('Redirection to the next mission')
+        )
+        menu.addItem(
             localize('All chapters list'), function() {
-                myself.allExerciceList('chapters');
+                myself.goToURL('/chapters');
             },
             localize('Redirection on the list of all missions')
         )
@@ -2260,7 +2266,7 @@ IDE_Morph.prototype.missionMenu = function () {
     } else {
         menu.addItem(
             localize('All Projects list'), function() {
-                myself.allExerciceList('projects');
+                myself.goToURL('/projects');
             },
             localize('Redirection on the list of all projects')
         )
@@ -2514,7 +2520,11 @@ IDE_Morph.prototype.descriptionMission = function () {
     jQuery("#missionModal").modal('toggle')
 };
 
-IDE_Morph.prototype.allExerciceList = function (exercice) {
+IDE_Morph.prototype.goalMission = function () {
+    jQuery("#goalModal").modal('toggle')
+};
+
+IDE_Morph.prototype.goToURL = function (exercice) {
     var dialog = new DialogBoxMorph().withKey('Sauvegarde'),
         myself = this,
         world = this.world(),
@@ -2532,12 +2542,12 @@ IDE_Morph.prototype.allExerciceList = function (exercice) {
                     myself.exportProjectToServer(name);
                 }, null, 'exportProject');
             }
-            window.location.href = window.location.protocol+'//'+window.location.host+'/'+exercice;
+            window.location.href = window.location.protocol+'//'+window.location.host+exercice;
         },
         localize('Yes'));
     dialog.addButton(
         function(){
-            window.location.href = window.location.protocol+'//'+window.location.host+'/'+exercice;
+            window.location.href = window.location.protocol+'//'+window.location.host+exercice;
         },
         localize('non'));
     btn1 = dialog.buttons.children[0];
