@@ -1749,7 +1749,10 @@ IDE_Morph.prototype.applySavedSettings = function () {
     if (language && language !== 'en') {
         this.userLanguage = language;
     } else {
-        this.userLanguage = null;
+        if (world.role == "STUDENT")
+            this.userLanguage = 'fr';
+        else
+            this.userLanguage = null;
     }
 
     //  click
