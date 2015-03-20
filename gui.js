@@ -381,7 +381,7 @@ IDE_Morph.prototype.openIn = function (world) {
     }
 
     if (this.userLanguage) {
-        this.setLanguage(this.userLanguage, interpretUrlAnchors);
+        this.setLanguage(this.userLanguage);
     } else {
         interpretUrlAnchors.call(this);
     }
