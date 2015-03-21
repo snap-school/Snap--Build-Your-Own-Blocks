@@ -2046,9 +2046,9 @@ SpriteMorph.prototype.freshPalette = function (category) {
             });
         }
 
-        if (canHidePrimitives()) {
-            //disable hide for student.
-            if (!myself.world().role == 0) {
+        //disable show-hide for student.
+        if (!myself.world().role == "STUDENT") {
+            if (canHidePrimitives()) {
                 menu.addItem(
                     'hide primitives',
                     function () {
@@ -2066,10 +2066,7 @@ SpriteMorph.prototype.freshPalette = function (category) {
                     }
                 );
             }
-        }
-        if (hasHiddenPrimitives()) {
-            //disable show for student.
-            if (!myself.world().role == 0) {
+            if (hasHiddenPrimitives()) {
                 menu.addItem(
                     'show primitives',
                     function () {
