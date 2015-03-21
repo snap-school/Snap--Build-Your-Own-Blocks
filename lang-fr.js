@@ -667,6 +667,10 @@ SnapTranslator.dict.fr = {
         'Sauvegarde du project sur le serveur',
     'Exported!':
         'Sauv\u00E9!',
+    'Get to the next mission':
+        'Passer \u00E0 la mission suivante',
+    'Redirection to the next mission':
+        'Redirection vers la mission suivante',
     'All chapters list':
         'Liste des chapitres',
     'Redirection on the list of all missions\nDon\'t forget to save before':
