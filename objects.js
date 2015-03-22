@@ -2047,7 +2047,7 @@ SpriteMorph.prototype.freshPalette = function (category) {
         }
 
         //disable show-hide for student.
-        if (!myself.world().role == "STUDENT") {
+        if (myself.world().role !== "STUDENT") {
             if (canHidePrimitives()) {
                 menu.addItem(
                     'hide primitives',
