@@ -2247,12 +2247,13 @@ IDE_Morph.prototype.missionMenu = function () {
         }
     )
     if (document.location.pathname.split('/')[1] != "projects") {
+        if (world.nextExerciceURL){
         menu.addItem(
             localize('Get to the next mission'), function() {
                 myself.goToURL(world.nextExerciceURL);
             },
             localize('Redirection to the next mission')
-        )
+        )}
         menu.addItem(
             localize('All chapters list'), function() {
                 myself.goToURL('/chapters');
