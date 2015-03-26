@@ -2945,13 +2945,15 @@ BlockMorph.prototype.mouseClickLeft = function () {
     var top = this.topBlock(),
         receiver = top.receiver(),
         stage;
-    if (top instanceof PrototypeHatBlockMorph) {
-        return top.mouseClickLeft();
-    }
-    if (receiver) {
-        stage = receiver.parentThatIsA(StageMorph);
-        if (stage) {
-            stage.threads.toggleProcess(top);
+    if (world.role !== "STUDENT"){
+        if (top instanceof PrototypeHatBlockMorph) {
+            return top.mouseClickLeft();
+        }
+        if (receiver) {
+            stage = receiver.parentThatIsA(StageMorph);
+            if (stage) {
+                stage.threads.toggleProcess(top);
+            }
         }
     }
 };
