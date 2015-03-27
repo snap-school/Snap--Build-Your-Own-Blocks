@@ -1297,7 +1297,8 @@ IDE_Morph.prototype.createCorral = function () {
 
     this.corral.stageIcon = new SpriteIconMorph(this.stage);
     this.corral.stageIcon.isDraggable = false;
-    this.corral.add(this.corral.stageIcon);
+    if (world.role !== "STUDENT")
+        this.corral.add(this.corral.stageIcon);
 
     frame = new ScrollFrameMorph(null, null, this.sliderColor);
     frame.acceptsDrops = false;
@@ -1313,10 +1314,22 @@ IDE_Morph.prototype.createCorral = function () {
 
     frame.alpha = 0;
 
-    this.sprites.asArray().forEach(function (morph) {
-        template = new SpriteIconMorph(morph, template);
-        frame.contents.add(template);
-    });
+    if (world.role === "STUDENT"){
+        var i = 1;
+        this.sprites.asArray().forEach(function (morph) {
+            if (i > 0){
+                template = new SpriteIconMorph(morph, template);
+                frame.contents.add(template);
+            }
+            i--;
+        });
+    }
+    else{
+        this.sprites.asArray().forEach(function (morph) {
+            template = new SpriteIconMorph(morph, template);
+            frame.contents.add(template);
+        });
+    }
 
     this.corral.frame = frame;
     this.corral.add(frame);

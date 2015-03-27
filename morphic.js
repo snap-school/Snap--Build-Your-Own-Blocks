@@ -9591,98 +9591,106 @@ HandMorph.prototype.processMouseMove = function (event) {
         topMorph,
         fb;
 
-    pos = new Point(
-        event.pageX - posInDocument.x,
-        event.pageY - posInDocument.y
-    );
+    if (myself.world.mousemovecounter === undefined || myself.world.mousemovecounter === 0){ 
+        myself.world.mousemovecounter = 1
 
-    this.setPosition(pos);
 
-    // determine the new mouse-over-list:
-    // mouseOverNew = this.allMorphsAtPointer();
-    mouseOverNew = this.morphAtPointer().allParents();
+        pos = new Point(
+            event.pageX - posInDocument.x,
+            event.pageY - posInDocument.y
+        );
 
-    if ((this.children.length === 0) &&
-            (this.mouseButton === 'left')) {
-        topMorph = this.morphAtPointer();
-        morph = topMorph.rootForGrab();
-        if (topMorph.mouseMove) {
-            topMorph.mouseMove(pos);
-        }
+        this.setPosition(pos);
 
-        // if a morph is marked for grabbing, just grab it
-        if (this.morphToGrab) {
-            if (this.morphToGrab.isDraggable) {
-                morph = this.morphToGrab;
-                this.grab(morph);
-            } else if (this.morphToGrab.isTemplate) {
-                morph = this.morphToGrab.fullCopy();
-                morph.isTemplate = false;
-                morph.isDraggable = true;
-                this.grab(morph);
-                this.grabOrigin = this.morphToGrab.situation();
+        // determine the new mouse-over-list:
+        // mouseOverNew = this.allMorphsAtPointer();
+        mouseOverNew = this.morphAtPointer().allParents();
+
+        if ((this.children.length === 0) &&
+                (this.mouseButton === 'left')) {
+            topMorph = this.morphAtPointer();
+            morph = topMorph.rootForGrab();
+            if (topMorph.mouseMove) {
+                topMorph.mouseMove(pos);
             }
-            if (morph) {
-                // if the mouse has left its fullBounds, center it
-                fb = morph.fullBounds();
-                if (!fb.containsPoint(pos)) {
-                    this.bounds.origin = fb.center();
+
+            // if a morph is marked for grabbing, just grab it
+            if (this.morphToGrab) {
+                if (this.morphToGrab.isDraggable) {
+                    morph = this.morphToGrab;
                     this.grab(morph);
-                    this.setPosition(pos);
+                } else if (this.morphToGrab.isTemplate) {
+                    morph = this.morphToGrab.fullCopy();
+                    morph.isTemplate = false;
+                    morph.isDraggable = true;
+                    this.grab(morph);
+                    this.grabOrigin = this.morphToGrab.situation();
+                }
+                if (morph) {
+                    // if the mouse has left its fullBounds, center it
+                    fb = morph.fullBounds();
+                    if (!fb.containsPoint(pos)) {
+                        this.bounds.origin = fb.center();
+                        this.grab(morph);
+                        this.setPosition(pos);
+                    }
                 }
             }
         }
 
-/*
-    original, more cautious code for grabbing Morphs,
-    retained in case of needing to fall back:
+    /*
+        original, more cautious code for grabbing Morphs,
+        retained in case of needing to fall back:
 
-        if (morph === this.morphToGrab) {
-            if (morph.isDraggable) {
-                this.grab(morph);
-            } else if (morph.isTemplate) {
-                morph = morph.fullCopy();
-                morph.isTemplate = false;
-                morph.isDraggable = true;
-                this.grab(morph);
+            if (morph === this.morphToGrab) {
+                if (morph.isDraggable) {
+                    this.grab(morph);
+                } else if (morph.isTemplate) {
+                    morph = morph.fullCopy();
+                    morph.isTemplate = false;
+                    morph.isDraggable = true;
+                    this.grab(morph);
+                }
             }
-        }
-*/
+    */
+
+        this.mouseOverList.forEach(function (old) {
+            if (!contains(mouseOverNew, old)) {
+                if (old.mouseLeave) {
+                    old.mouseLeave();
+                }
+                if (old.mouseLeaveDragging && myself.mouseButton) {
+                    old.mouseLeaveDragging();
+                }
+            }
+        });
+        mouseOverNew.forEach(function (newMorph) {
+            if (!contains(myself.mouseOverList, newMorph)) {
+                if (newMorph.mouseEnter) {
+                    newMorph.mouseEnter();
+                }
+                if (newMorph.mouseEnterDragging && myself.mouseButton) {
+                    newMorph.mouseEnterDragging();
+                }
+            }
+
+            // autoScrolling support:
+            if (myself.children.length > 0) {
+                if (newMorph instanceof ScrollFrameMorph) {
+                    if (!newMorph.bounds.insetBy(
+                            MorphicPreferences.scrollBarSize * 3
+                        ).containsPoint(myself.bounds.origin)) {
+                        newMorph.startAutoScrolling();
+                    }
+                }
+            }
+        });
+        this.mouseOverList = mouseOverNew;
 
     }
-
-    this.mouseOverList.forEach(function (old) {
-        if (!contains(mouseOverNew, old)) {
-            if (old.mouseLeave) {
-                old.mouseLeave();
-            }
-            if (old.mouseLeaveDragging && myself.mouseButton) {
-                old.mouseLeaveDragging();
-            }
-        }
-    });
-    mouseOverNew.forEach(function (newMorph) {
-        if (!contains(myself.mouseOverList, newMorph)) {
-            if (newMorph.mouseEnter) {
-                newMorph.mouseEnter();
-            }
-            if (newMorph.mouseEnterDragging && myself.mouseButton) {
-                newMorph.mouseEnterDragging();
-            }
-        }
-
-        // autoScrolling support:
-        if (myself.children.length > 0) {
-            if (newMorph instanceof ScrollFrameMorph) {
-                if (!newMorph.bounds.insetBy(
-                        MorphicPreferences.scrollBarSize * 3
-                    ).containsPoint(myself.bounds.origin)) {
-                    newMorph.startAutoScrolling();
-                }
-            }
-        }
-    });
-    this.mouseOverList = mouseOverNew;
+    else{
+        myself.world.mousemovecounter = (myself.world.mousemovecounter + 1 ) % 4
+    }
 };
 
 HandMorph.prototype.processMouseScroll = function (event) {
