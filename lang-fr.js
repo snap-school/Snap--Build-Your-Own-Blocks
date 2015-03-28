@@ -423,6 +423,8 @@ SnapTranslator.dict.fr = {
         'Quand je suis press\u00E9 ',
     'when I receive %msgHat':
         'Quand je re\u00E7ois %msgHat',
+    'when I receive finished':
+        'Quand je re\u00E7ois fini',
     'broadcast %msg':
         'envoyer \u00E0 tous %msg',
     'broadcast %msg and wait':

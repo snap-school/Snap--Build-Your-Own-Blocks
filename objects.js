@@ -535,6 +535,11 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'control',
             spec: 'when I receive %msgHat'
         },
+        receiveFinished: {
+            type: 'hat',
+            category: 'control',
+            spec: 'when I receive finished'
+        },
         //add receiveMessage command here
         doBroadcast: {
             type: 'command',
@@ -1673,6 +1678,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         blocks.push(block('receiveKey'));
         blocks.push(block('receiveClick'));
         blocks.push(block('receiveMessage'));
+        blocks.push(block('receiveFinished'));
         blocks.push('-');
         blocks.push(block('doBroadcast'));
         blocks.push(block('doBroadcastAndWait'));
@@ -3030,12 +3036,16 @@ SpriteMorph.prototype.allMessageNames = function () {
 };
 
 SpriteMorph.prototype.allHatBlocksFor = function (message) {
+    var threadmanager = this.parentThatIsA(StageMorph).threads;
     return this.scripts.children.filter(function (morph) {
         var event;
         if (morph.selector) {
             if (morph.selector === 'receiveMessage') {
                 event = morph.inputs()[0].evaluate();
-                return event === message || (event instanceof Array);
+                return event === message || (event instanceof Array && message !== threadmanager.finishedMessage);
+            }
+            if (morph.selector === 'receiveFinished') {
+                return message === threadmanager.finishedMessage;
             }
             if (morph.selector === 'receiveGo' || morph.selector === 'receiveGoThenBroadcastFinished') {
                 return message === '__shout__go__';
@@ -4396,6 +4406,7 @@ StageMorph.prototype.blockTemplates = function (category) {
         blocks.push(block('receiveKey'));
         blocks.push(block('receiveClick'));
         blocks.push(block('receiveMessage'));
+        blocks.push(block('receiveFinished'));
         blocks.push('-');
         blocks.push(block('doBroadcast'));
         blocks.push(block('doBroadcastAndWait'));

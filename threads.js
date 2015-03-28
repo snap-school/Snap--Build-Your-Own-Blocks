@@ -123,6 +123,12 @@ function snapEquals(a, b) {
 
 function ThreadManager() {
     this.processes = [];
+    function randomString(length, chars) {
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+        return result;
+    }
+    this.finishedMessage = randomString(10,"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 }
 
 ThreadManager.prototype.toggleProcess = function (block) {
@@ -219,11 +225,12 @@ ThreadManager.prototype.step = function () {
 ThreadManager.prototype.removeTerminatedProcesses = function () {
     // and un-highlight their scripts
     var remaining = [];
+    var threadmanager = this;
     this.processes.forEach(function (proc) {
         if (!proc.isRunning() && !proc.errorFlag && !proc.isDead) {
             proc.topBlock.removeHighlight();
             if (proc.topBlock.blockSpec === localize('when %greenflag clicked')){
-                proc.doBroadcast("fini").forEach(function (remproc){
+                proc.doBroadcast(threadmanager.finishedMessage).forEach(function (remproc){
                     remaining.push(remproc);
                 });
             }
@@ -1796,7 +1803,8 @@ Process.prototype.reportURL = function (url) {
 Process.prototype.doBroadcast = function (message) {
     var stage = this.homeContext.receiver.parentThatIsA(StageMorph),
         hats = [],
-        procs = [];
+        procs = [],
+        threads = stage.threads;
 
     if (message !== '') {
         stage.lastMessage = message;
@@ -1806,7 +1814,13 @@ Process.prototype.doBroadcast = function (message) {
             }
         });
         hats.forEach(function (block) {
-            procs.push(stage.threads.startProcess(block, stage.isThreadSafe));
+            var add = true;
+            threads.processes.forEach(function (proc){
+                add = add && proc.topBlock != block;
+            })
+            if (add){
+                procs.push(stage.threads.startProcess(block, stage.isThreadSafe));
+            }
         });
     }
     return procs;

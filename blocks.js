@@ -6466,7 +6466,7 @@ InputSlotMorph.prototype.messagesMenu = function () {
 };
 
 InputSlotMorph.prototype.messagesReceivedMenu = function () {
-    var dict = {'any message': ['any message'], 'fini':'fini'},
+    var dict = {'any message': ['any message']},
         rcvr = this.parentThatIsA(BlockMorph).receiver(),
         stage = rcvr.parentThatIsA(StageMorph),
         myself = this,
