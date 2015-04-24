@@ -1628,6 +1628,7 @@ IDE_Morph.prototype.pressStart = function () {
     if (this.world().currentKey === 16) { // shiftClicked
         this.toggleFastTracking();
     } else {
+    	this.stopAllScripts();
         this.runScripts();
     }
 };
