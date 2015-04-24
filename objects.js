@@ -541,6 +541,11 @@ SpriteMorph.prototype.initBlocks = function () {
             spec: 'when I receive finished'
         },
         //add receiveMessage command here
+        doSendMissionSolved: {
+            type: 'command',
+            category: 'control',
+            spec: 'mission is solved'
+        },
         doBroadcast: {
             type: 'command',
             category: 'control',
@@ -1680,6 +1685,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         blocks.push(block('receiveMessage'));
         blocks.push(block('receiveFinished'));
         blocks.push('-');
+        blocks.push(block('doSendMissionSolved'));
         blocks.push(block('doBroadcast'));
         blocks.push(block('doBroadcastAndWait'));
         blocks.push(watcherToggle('getLastMessage'));
@@ -4408,6 +4414,7 @@ StageMorph.prototype.blockTemplates = function (category) {
         blocks.push(block('receiveMessage'));
         blocks.push(block('receiveFinished'));
         blocks.push('-');
+        blocks.push(block('doSendMissionSolved'));
         blocks.push(block('doBroadcast'));
         blocks.push(block('doBroadcastAndWait'));
         blocks.push(watcherToggle('getLastMessage'));

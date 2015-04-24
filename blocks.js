@@ -3279,7 +3279,7 @@ CommandBlockMorph.prototype.closestAttachTarget = function (newParent) {
         ref.forEach(function (eachRef) {
             if (eachRef.loc !== eachTarget.loc) {
                 dist = eachRef.point.distanceTo(eachTarget.point);
-                if ((dist < thresh) && (dist < minDist)) {
+                if ((dist < thresh) && (dist < minDist) && eachTarget.element.isVisible) {
                     minDist = dist;
                     answer = eachTarget;
                 }

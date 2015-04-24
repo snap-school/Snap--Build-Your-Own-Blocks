@@ -447,6 +447,8 @@ SnapTranslator.dict.fr = {
         'si %b  %c sinon %c',
     'report %s':
         'rapporte %s',
+    'mission is solved':
+        'la mission est réussie',
     'stop block':
         'arr\u00EAter le bloc',
     'stop script':
@@ -669,8 +671,6 @@ SnapTranslator.dict.fr = {
         'Sauvegarde du project sur le serveur',
     'Exported!':
         'Sauv\u00E9!',
-    'Get to the next mission':
-        'Passer \u00E0 la mission suivante',
     'Redirection to the next mission':
         'Redirection vers la mission suivante',
     'All chapters list':

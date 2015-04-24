@@ -1798,6 +1798,16 @@ Process.prototype.reportURL = function (url) {
     this.pushContext();
 };
 
+Process.prototype.doSendMissionSolved = function () {
+    var stage;
+    if (this.homeContext.receiver) {
+        ide = this.homeContext.receiver.parentThatIsA(IDE_Morph);
+        if (ide) {
+            ide.missionSolved();
+        }
+    }
+};
+
 // Process event messages primitives
 
 Process.prototype.doBroadcast = function (message) {
