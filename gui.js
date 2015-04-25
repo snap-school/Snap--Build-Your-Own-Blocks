@@ -1010,7 +1010,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
         }
     };
 
-    nameField = new InputFieldMorph(this.currentSprite.name);
+    nameField = new InputFieldMorph(this.currentSprite.name,undefined,undefined,(world.role == "STUDENT"));
     nameField.setWidth(100); // fixed dimensions
     nameField.contrast = 90;
     nameField.setPosition(thumbnail.topRight().add(new Point(10, 3)));
@@ -1319,8 +1319,10 @@ IDE_Morph.prototype.createCorral = function () {
         this.sprites.asArray().forEach(function (morph) {
             if (i > 0){
                 template = new SpriteIconMorph(morph, template);
+                template.isDraggable = false;
                 frame.contents.add(template);
             }
+
             i--;
         });
     }
@@ -5338,22 +5340,24 @@ SpriteIconMorph.prototype.userMenu = function () {
     }
     if (!(this.object instanceof SpriteMorph)) {return null; }
     menu.addItem("show", 'showSpriteOnStage');
-    menu.addItem("duplicate", 'duplicateSprite');
-    menu.addItem("delete", 'removeSprite');
-    menu.addLine();
-    if (this.object.anchor) {
-        menu.addItem(
-            localize('detach from') + ' ' + this.object.anchor.name,
-            function () {myself.object.detachFromAnchor(); }
-        );
-    }
-    if (this.object.parts.length) {
-        menu.addItem(
-            'detach all parts',
-            function () {myself.object.detachAllParts(); }
-        );
-    }
-    menu.addItem("export...", 'exportSprite');
+    if (world.role != "STUDENT"){
+	    menu.addItem("duplicate", 'duplicateSprite');
+	    menu.addItem("delete", 'removeSprite');
+	    menu.addLine();
+	    if (this.object.anchor) {
+	        menu.addItem(
+	            localize('detach from') + ' ' + this.object.anchor.name,
+	            function () {myself.object.detachFromAnchor(); }
+	        );
+	    }
+	    if (this.object.parts.length) {
+	        menu.addItem(
+	            'detach all parts',
+	            function () {myself.object.detachAllParts(); }
+	        );
+	    }
+	    menu.addItem("export...", 'exportSprite');
+	}
     return menu;
 };
 
