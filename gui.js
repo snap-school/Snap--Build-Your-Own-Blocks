@@ -4141,34 +4141,35 @@ IDE_Morph.prototype.missionSolved = function(){
 
 
 IDE_Morph.prototype.sendMissionSolved = function (){
-
-    function putURL(url, jsondata) {
-        try {
-            var request = new XMLHttpRequest({responseType: "json"});
-            request.open('POST', url, false);
-            var token = document.getElementsByName("csrf-token").item(0).content;
-            request.setRequestHeader("X-CSRF-Token", token);
-            request.setRequestHeader("Content-Type", "application/json");
-            request.setRequestHeader("Accept", "application/json")
-            request.send(JSON.stringify(jsondata));
-            if (request.status === 200) {
-                if (new_file) {
-                    responseJSON = JSON.parse(request.responseText);
-                    history.pushState(null, "Projet : "+responseJSON["name"], responseJSON["id"]);
+    if (!this.world().program_needs_check || this.world().role == "TEACHER"){
+        function putURL(url, jsondata) {
+            try {
+                var request = new XMLHttpRequest({responseType: "json"});
+                request.open('POST', url, false);
+                var token = document.getElementsByName("csrf-token").item(0).content;
+                request.setRequestHeader("X-CSRF-Token", token);
+                request.setRequestHeader("Content-Type", "application/json");
+                request.setRequestHeader("Accept", "application/json")
+                request.send(JSON.stringify(jsondata));
+                if (request.status === 200) {
+                    if (new_file) {
+                        responseJSON = JSON.parse(request.responseText);
+                        history.pushState(null, "Projet : "+responseJSON["name"], responseJSON["id"]);
+                    }
+                    return request.responseText;
                 }
-                return request.responseText;
+                throw new Error('unable to retrieve ' + url);
+            } catch (err) {
+                return;
             }
-            throw new Error('unable to retrieve ' + url);
-        } catch (err) {
-            return;
         }
+        var url = window.location.protocol+'//'+window.location.host+'/solved_missions/';
+        var curr_url = window.location.href;
+        var prog_id = curr_url.split("/");
+        prog_id = prog_id[prog_id.length-1];
+        jsonData = {program:{id: prog_id }};
+        putURL(url, jsonData);
     }
-    var url = window.location.protocol+'//'+window.location.host+'/solved_missions/';
-    var curr_url = window.location.href;
-    var prog_id = curr_url.split("/");
-    prog_id = prog_id[prog_id.length-1];
-    jsonData = {program:{id: prog_id }};
-    putURL(url, jsonData);
 
     this.exportProjectToServer();
 }
