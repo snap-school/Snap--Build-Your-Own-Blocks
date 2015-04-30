@@ -448,7 +448,9 @@ SnapTranslator.dict.fr = {
     'report %s':
         'rapporte %s',
     'mission is solved':
-        'la mission est réussie',
+        'La mission est r\u00E9ussie',
+    'mission is corrected':
+        'La mission a \u00E9t\u00E9 corrig\u00E9e',
     'stop block':
         'arr\u00EAter le bloc',
     'stop script':

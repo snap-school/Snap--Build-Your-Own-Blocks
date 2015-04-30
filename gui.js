@@ -2258,7 +2258,8 @@ IDE_Morph.prototype.missionMenu = function () {
         })
         return bool
     }
-    if (world.role === "TEACHER" && listContains(window.location.href.split("/"),"programs")) menu.addItem(localize('Solved'), 'sendMissionSolved');
+    if (world.role === "TEACHER" && listContains(window.location.href.split("/"),"programs")) menu.addItem(localize('mission is solved'), 'sendMissionSolved');
+    if (world.role === "TEACHER" && listContains(window.location.href.split("/"),"programs")) menu.addItem(localize('mission is corrected'), 'sendMissionCorrected');
     menu.addItem(localize('Save project on server'),
         function () {
             if (myself.projectName && myself.projectName != "Untitled") {
@@ -2911,7 +2912,7 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
         }
     }
 };
-IDE_Morph.prototype.exportProjectToServer = function (name) {
+IDE_Morph.prototype.exportProjectToServer = function (name, program_state) {
     var menu, str, jsonData, url;
 
     function putURL(url, jsondata, new_file) {
@@ -2954,7 +2955,10 @@ IDE_Morph.prototype.exportProjectToServer = function (name) {
             if (ressource[1] === "projects") {
                 jsonData = {project:{name: world.children[0].projectName, source_code: str }};
             } else {
-                jsonData = {program:{source_code: str }};
+                if(program_state)
+                    jsonData = {program:{source_code: str, state: program_state}};
+                else
+                    jsonData = {program:{source_code: str}};
             }
             putURL(url, jsonData, false);
         }
@@ -4143,37 +4147,18 @@ IDE_Morph.prototype.missionSolved = function(){
 
 
 IDE_Morph.prototype.sendMissionSolved = function (){
-    if (!this.world().program_needs_check || this.world().role == "TEACHER"){
-        function putURL(url, jsondata) {
-            try {
-                var request = new XMLHttpRequest({responseType: "json"});
-                request.open('POST', url, false);
-                var token = document.getElementsByName("csrf-token").item(0).content;
-                request.setRequestHeader("X-CSRF-Token", token);
-                request.setRequestHeader("Content-Type", "application/json");
-                request.setRequestHeader("Accept", "application/json")
-                request.send(JSON.stringify(jsondata));
-                if (request.status === 200) {
-                    if (new_file) {
-                        responseJSON = JSON.parse(request.responseText);
-                        history.pushState(null, "Projet : "+responseJSON["name"], responseJSON["id"]);
-                    }
-                    return request.responseText;
-                }
-                throw new Error('unable to retrieve ' + url);
-            } catch (err) {
-                return;
-            }
-        }
-        var url = window.location.protocol+'//'+window.location.host+'/solved_missions/';
-        var curr_url = window.location.href;
-        var prog_id = curr_url.split("/");
-        prog_id = prog_id[prog_id.length-1];
-        jsonData = {program:{id: prog_id }};
-        putURL(url, jsonData);
-    }
+    var world = this.world();
+    var state = 3;
+    if ( world.program_needs_check && !(world.role == "TEACHER"))
+        state = 1;
 
-    this.exportProjectToServer();
+
+    this.exportProjectToServer(false, state);
+}
+
+IDE_Morph.prototype.sendMissionCorrected = function (){
+
+    this.exportProjectToServer(false, 2);
 }
 
 // IDE_Morph user dialog shortcuts
