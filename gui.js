@@ -2273,10 +2273,10 @@ IDE_Morph.prototype.missionMenu = function () {
     )
     if (document.location.pathname.split('/')[1] != "projects") {
         menu.addItem(
-            localize('All chapters list'), function() {
-                myself.goToURL('/chapters');
+            localize('All courses list'), function() {
+                myself.goToURL('/courses');
             },
-            localize('Redirection on the list of all missions')
+            localize('Redirection on the list of all courses')
         )
         menu.addItem(
             localize('Reset the mission'), 'resetMission',
