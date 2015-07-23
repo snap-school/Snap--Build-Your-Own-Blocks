@@ -675,10 +675,10 @@ SnapTranslator.dict.fr = {
         'Sauv\u00E9!',
     'Redirection to the next mission':
         'Redirection vers la mission suivante',
-    'All chapters list':
-        'Liste des chapitres',
-    'Redirection on the list of all missions\nDon\'t forget to save before':
-        'Retour sur la liste des missions \n n\'oublie pas de sauver avant',
+    'All courses list':
+        'Liste des cours',
+    'Redirection on the list of all courses':
+        'Retour sur la liste des cours \n n\'oublie pas de sauver avant',
     'Do you want to save befor exit?':
         'Voulez vous Sauvegarder avant de quitter?',
     'Reset the mission':
