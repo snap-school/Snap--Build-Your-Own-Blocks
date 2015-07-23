@@ -2540,7 +2540,7 @@ IDE_Morph.prototype.descriptionMission = function () {
 };
 
 IDE_Morph.prototype.goalMission = function () {
-    jQuery("#goalModal").modal('toggle')
+    if (world.role == "Student") jQuery("#goalModal").modal('toggle')
 };
 
 IDE_Morph.prototype.goToURL = function (exercice) {
