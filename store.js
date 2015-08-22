@@ -931,11 +931,13 @@ SnapSerializer.prototype.loadBlock = function (model, isReporter) {
             )) {
             var block = SpriteMorph.prototype.variableBlock(
                 model.attributes['var']);
-            block.isVisible = isVisible === "true";
+            if (isVisible !== "true")
+                block.hide();
             return block;
         }
         block = SpriteMorph.prototype.blockForSelector(model.attributes.s);
-        block.isVisible = isVisible === "true";
+        if (isVisible !== "true")
+                block.hide();
     } else if (model.tag === 'custom-block') {
         isGlobal = model.attributes.scope ? false : true;
         receiver = isGlobal ? this.project.stage
@@ -977,7 +979,8 @@ SnapSerializer.prototype.loadBlock = function (model, isReporter) {
             info.type === 'predicate',
             false
         );
-        block.isVisible = isVisible === "true";
+        if (isVisible !== "true")
+            block.hide();
     }
     if (block === null) {
         block = this.obsoleteBlock(isReporter);

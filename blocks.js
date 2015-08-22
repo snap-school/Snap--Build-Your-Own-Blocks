@@ -1871,6 +1871,7 @@ BlockMorph.prototype.init = function () {
             this.wasHidden = true;
         else{
             BlockMorph.uber.hide.call(this);
+            this.acceptsDrops = false;
         }
     }
     this.show = function(){
@@ -1878,6 +1879,7 @@ BlockMorph.prototype.init = function () {
             this.wasHidden = false;
         else{
             BlockMorph.uber.show.call(this);
+            this.acceptsDrops = true;
         }
     }
 };
