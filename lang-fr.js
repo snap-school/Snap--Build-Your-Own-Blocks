@@ -1,27 +1,27 @@
 /*
 
-	lang-de.js
+    lang-de.js
 
-	German translation for SNAP!
+    German translation for SNAP!
 
-	written by Jens Mönig
+    written by Jens Mönig
 
-	Copyright (C) 2012 by Jens Mönig
+    Copyright (C) 2014 by Jens Mönig
 
-	This file is part of Snap!.
+    This file is part of Snap!.
 
-	Snap! is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Affero General Public License as
-	published by the Free Software Foundation, either version 3 of
-	the License, or (at your option) any later version.
+    Snap! is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Affero General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
 
-	You should have received a copy of the GNU Affero General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
@@ -415,12 +415,16 @@ SnapTranslator.dict.fr = {
       // control:
     'when %greenflag clicked':
         'Quand %greenflag est press\u00E9',
+    'when %greenflag clicked (without broadcasting)':
+        'Quand %greenflag est press\u00E9 (sans envoyer de \"fini\")',
     'when %keyHat key pressed':
         'Quand %keyHat est press\u00E9',
     'when I am clicked':
         'Quand je suis press\u00E9 ',
     'when I receive %msgHat':
         'Quand je re\u00E7ois %msgHat',
+    'when I receive finished':
+        'Quand je re\u00E7ois fini',
     'broadcast %msg':
         'envoyer \u00E0 tous %msg',
     'broadcast %msg and wait':
@@ -443,6 +447,10 @@ SnapTranslator.dict.fr = {
         'si %b  %c sinon %c',
     'report %s':
         'rapporte %s',
+    'mission is solved':
+        'La mission est r\u00E9ussie',
+    'mission is corrected':
+        'La mission a \u00E9t\u00E9 corrig\u00E9e',
     'stop block':
         'arr\u00EAter le bloc',
     'stop script':
@@ -663,12 +671,16 @@ SnapTranslator.dict.fr = {
         'Description',
     'Save project on server':
         'Sauvegarde du project sur le serveur',
-    'All missions list':
-        'Liste des missions',
-    'Redirection on the list of all missions\nDon\'t forget to save before':
-        'Retour sur la liste des missions \n n\'oublie pas de sauver avant',
+    'Exported!':
+        'Sauv\u00E9!',
+    'Redirection to the next mission':
+        'Redirection vers la mission suivante',
+    'All courses list':
+        'Liste des cours',
+    'Redirection on the list of all courses':
+        'Retour sur la liste des cours \n n\'oublie pas de sauver avant',
     'Do you want to save befor exit?':
-        'Voullez vous Sauvegarder avant de quitter?',
+        'Voulez vous Sauvegarder avant de quitter?',
     'Reset the mission':
         'Réinitialiser la mission',
 
@@ -761,6 +773,11 @@ SnapTranslator.dict.fr = {
         'Aide',
 
     // blocks:
+
+    'hide all':
+        'tout cacher',
+    'show all':
+        'tout montrer',
     'help...':
         'Aide...',
     'duplicate':
@@ -794,7 +811,7 @@ SnapTranslator.dict.fr = {
 
     // scripting area
     'clean up':
-        'effacer',
+        'R\u00E9arranger',
     'arrange scripts\nvertically':
         'arrange scripts\nvertically',
     'add comment':

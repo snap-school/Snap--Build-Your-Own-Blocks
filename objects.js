@@ -513,6 +513,11 @@ SpriteMorph.prototype.initBlocks = function () {
         receiveGo: {
             type: 'hat',
             category: 'control',
+            spec: 'when %greenflag clicked (without broadcasting)'
+        },
+        receiveGoThenBroadcastFinished: {
+            type: 'hat',
+            category: 'control',
             spec: 'when %greenflag clicked'
         },
         receiveKey: {
@@ -530,7 +535,17 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'control',
             spec: 'when I receive %msgHat'
         },
+        receiveFinished: {
+            type: 'hat',
+            category: 'control',
+            spec: 'when I receive finished'
+        },
         //add receiveMessage command here
+        doSendMissionSolved: {
+            type: 'command',
+            category: 'control',
+            spec: 'mission is solved'
+        },
         doBroadcast: {
             type: 'command',
             category: 'control',
@@ -1664,10 +1679,13 @@ SpriteMorph.prototype.blockTemplates = function (category) {
     } else if (cat === 'control') {
 
         blocks.push(block('receiveGo'));
+        blocks.push(block('receiveGoThenBroadcastFinished'));
         blocks.push(block('receiveKey'));
         blocks.push(block('receiveClick'));
         blocks.push(block('receiveMessage'));
+        blocks.push(block('receiveFinished'));
         blocks.push('-');
+        blocks.push(block('doSendMissionSolved'));
         blocks.push(block('doBroadcast'));
         blocks.push(block('doBroadcastAndWait'));
         blocks.push(watcherToggle('getLastMessage'));
@@ -2040,9 +2058,9 @@ SpriteMorph.prototype.freshPalette = function (category) {
             });
         }
 
-        if (canHidePrimitives()) {
-            //disable hide for student.
-            if (!myself.world().role == 0) {
+        //disable show-hide for student.
+        if (myself.world().role !== "STUDENT") {
+            if (canHidePrimitives()) {
                 menu.addItem(
                     'hide primitives',
                     function () {
@@ -2060,10 +2078,7 @@ SpriteMorph.prototype.freshPalette = function (category) {
                     }
                 );
             }
-        }
-        if (hasHiddenPrimitives()) {
-            //disable show for student.
-            if (!myself.world().role == 0) {
+            if (hasHiddenPrimitives()) {
                 menu.addItem(
                     'show primitives',
                     function () {
@@ -3027,14 +3042,18 @@ SpriteMorph.prototype.allMessageNames = function () {
 };
 
 SpriteMorph.prototype.allHatBlocksFor = function (message) {
+    var threadmanager = this.parentThatIsA(StageMorph).threads;
     return this.scripts.children.filter(function (morph) {
         var event;
         if (morph.selector) {
             if (morph.selector === 'receiveMessage') {
                 event = morph.inputs()[0].evaluate();
-                return event === message || (event instanceof Array);
+                return event === message || (event instanceof Array && message !== threadmanager.finishedMessage);
             }
-            if (morph.selector === 'receiveGo') {
+            if (morph.selector === 'receiveFinished') {
+                return message === threadmanager.finishedMessage;
+            }
+            if (morph.selector === 'receiveGo' || morph.selector === 'receiveGoThenBroadcastFinished') {
                 return message === '__shout__go__';
             }
             if (morph.selector === 'receiveOnClone') {
@@ -4389,10 +4408,13 @@ StageMorph.prototype.blockTemplates = function (category) {
     } else if (cat === 'control') {
 
         blocks.push(block('receiveGo'));
+        blocks.push(block('receiveGoThenBroadcastFinished'));
         blocks.push(block('receiveKey'));
         blocks.push(block('receiveClick'));
         blocks.push(block('receiveMessage'));
+        blocks.push(block('receiveFinished'));
         blocks.push('-');
+        blocks.push(block('doSendMissionSolved'));
         blocks.push(block('doBroadcast'));
         blocks.push(block('doBroadcastAndWait'));
         blocks.push(watcherToggle('getLastMessage'));

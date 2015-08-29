@@ -1858,6 +1858,7 @@ BlockMorph.prototype.init = function () {
     this.comment = null; // optional "sticky" comment morph
 
     this.hidden = false; // must be hidden
+    this.wasHidden = false; // Flag for getting out of full-screen not showing hidden blocks
 
     // not to be persisted:
     this.instantiationSpec = null; // spec to set upon fullCopy() of template
@@ -1865,6 +1866,23 @@ BlockMorph.prototype.init = function () {
 
     BlockMorph.uber.init.call(this);
     this.color = new Color(0, 17, 173);
+    this.hide = function() {
+        if(!this.isVisible)
+            this.wasHidden = true;
+        else{
+            BlockMorph.uber.hide.call(this);
+            this.acceptsDrops = false;
+        }
+    }
+    this.show = function(){
+        if(this.wasHidden)
+            this.wasHidden = false;
+        else{
+            BlockMorph.uber.show.call(this);
+            this.acceptsDrops = true;
+            this.fixLayout();
+        }
+    }
 };
 
 BlockMorph.prototype.receiver = function () {
@@ -2930,13 +2948,15 @@ BlockMorph.prototype.mouseClickLeft = function () {
     var top = this.topBlock(),
         receiver = top.receiver(),
         stage;
-    if (top instanceof PrototypeHatBlockMorph) {
-        return top.mouseClickLeft();
-    }
-    if (receiver) {
-        stage = receiver.parentThatIsA(StageMorph);
-        if (stage) {
-            stage.threads.toggleProcess(top);
+    if (world.role !== "STUDENT"){
+        if (top instanceof PrototypeHatBlockMorph) {
+            return top.mouseClickLeft();
+        }
+        if (receiver) {
+            stage = receiver.parentThatIsA(StageMorph);
+            if (stage) {
+                stage.threads.toggleProcess(top);
+            }
         }
     }
 };
@@ -3262,7 +3282,7 @@ CommandBlockMorph.prototype.closestAttachTarget = function (newParent) {
         ref.forEach(function (eachRef) {
             if (eachRef.loc !== eachTarget.loc) {
                 dist = eachRef.point.distanceTo(eachTarget.point);
-                if ((dist < thresh) && (dist < minDist)) {
+                if ((dist < thresh) && (dist < minDist) && eachTarget.element.isVisible) {
                     minDist = dist;
                     answer = eachTarget;
                 }
@@ -4899,11 +4919,11 @@ ScriptsMorph.prototype.userMenu = function () {
     }
     if (world.role !== 'STUDENT') {
         menu.addItem(
-            'show all',
+            localize('show all'),
             'showall'
         );
         menu.addItem(
-            'hide all',
+            localize('hide all'),
             'hideall'
         );
     }
@@ -4922,7 +4942,7 @@ ScriptsMorph.prototype.userMenu = function () {
         'exportScriptsPicture',
         'open a new window\nwith a picture of all scripts'
     );
-    if (ide) {
+    if (ide && world.role != "STUDENT") {
         menu.addLine();
         menu.addItem(
             'make a block...',

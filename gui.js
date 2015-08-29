@@ -381,7 +381,7 @@ IDE_Morph.prototype.openIn = function (world) {
     }
 
     if (this.userLanguage) {
-        this.setLanguage(this.userLanguage, interpretUrlAnchors);
+        this.setLanguage(this.userLanguage);
     } else {
         interpretUrlAnchors.call(this);
     }
@@ -511,6 +511,7 @@ IDE_Morph.prototype.createControlBar = function () {
     stageSizeButton = button;
     this.controlBar.add(stageSizeButton);
     this.controlBar.stageSizeButton = button; // for refreshing
+    
 
     //appModeButton
     button = new ToggleButtonMorph(
@@ -755,6 +756,14 @@ IDE_Morph.prototype.createControlBar = function () {
         this.label.setCenter(this.center());
         this.label.setLeft(this.settingsButton.right() + padding);
     };
+
+
+    if(world.role == "STUDENT") {
+        //hidding some useless buttons for student.
+        this.controlBar.projectButton.hide();
+        this.controlBar.stageSizeButton.hide();
+        this.controlBar.appModeButton.hide();
+    }
 };
 
 IDE_Morph.prototype.createCategories = function () {
@@ -1001,7 +1010,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
         }
     };
 
-    nameField = new InputFieldMorph(this.currentSprite.name);
+    nameField = new InputFieldMorph(this.currentSprite.name,undefined,undefined,(world.role == "STUDENT"));
     nameField.setWidth(100); // fixed dimensions
     nameField.contrast = 90;
     nameField.setPosition(thumbnail.topRight().add(new Point(10, 3)));
@@ -1098,7 +1107,9 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.labelColor = this.buttonLabelColor;
     tab.drawNew();
     tab.fixLayout();
-    tabBar.add(tab);
+    tabBar.add(tab);    
+    if (world.role == "STUDENT")
+        tab.hide();
 
     tab = new TabMorph(
         tabColors,
@@ -1118,6 +1129,9 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.drawNew();
     tab.fixLayout();
     tabBar.add(tab);
+    if (world.role == "STUDENT")
+        tab.hide();
+
 
     tabBar.fixLayout();
     tabBar.children.forEach(function (each) {
@@ -1265,6 +1279,8 @@ IDE_Morph.prototype.createCorralBar = function () {
         this.corralBar.left() + padding + newbutton.width() + padding
     );
     this.corralBar.add(paintbutton);
+    if (world.role == "STUDENT")
+        this.corralBar.hide();
 };
 
 IDE_Morph.prototype.createCorral = function () {
@@ -1281,7 +1297,8 @@ IDE_Morph.prototype.createCorral = function () {
 
     this.corral.stageIcon = new SpriteIconMorph(this.stage);
     this.corral.stageIcon.isDraggable = false;
-    this.corral.add(this.corral.stageIcon);
+    if (world.role !== "STUDENT")
+        this.corral.add(this.corral.stageIcon);
 
     frame = new ScrollFrameMorph(null, null, this.sliderColor);
     frame.acceptsDrops = false;
@@ -1297,10 +1314,24 @@ IDE_Morph.prototype.createCorral = function () {
 
     frame.alpha = 0;
 
-    this.sprites.asArray().forEach(function (morph) {
-        template = new SpriteIconMorph(morph, template);
-        frame.contents.add(template);
-    });
+    if (world.role === "STUDENT"){
+        var i = 1;
+        this.sprites.asArray().forEach(function (morph) {
+            if (i > 0){
+                template = new SpriteIconMorph(morph, template);
+                template.isDraggable = false;
+                frame.contents.add(template);
+            }
+
+            i--;
+        });
+    }
+    else{
+        this.sprites.asArray().forEach(function (morph) {
+            template = new SpriteIconMorph(morph, template);
+            frame.contents.add(template);
+        });
+    }
 
     this.corral.frame = frame;
     this.corral.add(frame);
@@ -1599,6 +1630,7 @@ IDE_Morph.prototype.pressStart = function () {
     if (this.world().currentKey === 16) { // shiftClicked
         this.toggleFastTracking();
     } else {
+    	this.stopAllScripts();
         this.runScripts();
     }
 };
@@ -1733,7 +1765,10 @@ IDE_Morph.prototype.applySavedSettings = function () {
     if (language && language !== 'en') {
         this.userLanguage = language;
     } else {
-        this.userLanguage = null;
+        if (world.role == "STUDENT")
+            this.userLanguage = 'fr';
+        else
+            this.userLanguage = null;
     }
 
     //  click
@@ -1863,9 +1898,9 @@ IDE_Morph.prototype.userMenu = function () {
 IDE_Morph.prototype.snapMenu = function () {
     var menu,
         world = this.world();
+    menu = new MenuMorph(this);
     if(world.role != "STUDENT") {
         //hidding some useless menu for student.
-        menu = new MenuMorph(this);
         menu.addItem('About...', 'aboutSnap');
         menu.addLine();
         menu.addItem(
@@ -2099,110 +2134,110 @@ IDE_Morph.prototype.settingsMenu = function () {
             'check for block\nto text mapping features',
             false
         );
+        addPreference(
+            'Clicking sound',
+            function () {
+                BlockMorph.prototype.toggleSnapSound();
+                if (BlockMorph.prototype.snapSound) {
+                    myself.saveSetting('click', true);
+                } else {
+                    myself.removeSetting('click');
+                }
+            },
+            BlockMorph.prototype.snapSound,
+            'uncheck to turn\nblock clicking\nsound off',
+            'check to turn\nblock clicking\nsound on'
+        );
+        addPreference(
+            'Animations',
+            function () {myself.isAnimating = !myself.isAnimating; },
+            myself.isAnimating,
+            'uncheck to disable\nIDE animations',
+            'check to enable\nIDE animations',
+            true
+        );
+        addPreference(
+            'Turbo mode',
+            'toggleFastTracking',
+            this.stage.isFastTracked,
+            'uncheck to run scripts\nat normal speed',
+            'check to prioritize\nscript execution'
+        );
+        addPreference(
+            'Rasterize SVGs',
+            function () {
+                MorphicPreferences.rasterizeSVGs =
+                    !MorphicPreferences.rasterizeSVGs;
+            },
+            MorphicPreferences.rasterizeSVGs,
+            'uncheck for smooth\nscaling of vector costumes',
+            'check to rasterize\nSVGs on import',
+            true
+        );
+        addPreference(
+            'Flat design',
+            function () {
+                if (MorphicPreferences.isFlat) {
+                    return myself.defaultDesign();
+                }
+                myself.flatDesign();
+            },
+            MorphicPreferences.isFlat,
+            'uncheck for default\nGUI design',
+            'check for alternative\nGUI design',
+            false
+        );
+        addPreference(
+            'Sprite Nesting',
+            function () {
+                SpriteMorph.prototype.enableNesting =
+                    !SpriteMorph.prototype.enableNesting;
+            },
+            SpriteMorph.prototype.enableNesting,
+            'uncheck to disable\nsprite composition',
+            'check to enable\nsprite composition',
+            true
+        );
+        menu.addLine(); // everything below this line is stored in the project
+        addPreference(
+            'Thread safe scripts',
+            function () {stage.isThreadSafe = !stage.isThreadSafe; },
+            this.stage.isThreadSafe,
+            'uncheck to allow\nscript reentrance',
+            'check to disallow\nscript reentrance'
+        );
+        addPreference(
+            'Prefer smooth animations',
+            'toggleVariableFrameRate',
+            StageMorph.prototype.frameRate,
+            'uncheck for greater speed\nat variable frame rates',
+            'check for smooth, predictable\nanimations across computers'
+        );
+        addPreference(
+            'Flat line ends',
+            function () {
+                SpriteMorph.prototype.useFlatLineEnds =
+                    !SpriteMorph.prototype.useFlatLineEnds;
+            },
+            SpriteMorph.prototype.useFlatLineEnds,
+            'uncheck for round ends of lines',
+            'check for flat ends of lines'
+        );
+        addPreference(
+            'Codification support',
+            function () {
+                StageMorph.prototype.enableCodeMapping =
+                    !StageMorph.prototype.enableCodeMapping;
+                myself.currentSprite.blocksCache.variables = null;
+                myself.currentSprite.paletteCache.variables = null;
+                myself.refreshPalette();
+            },
+            StageMorph.prototype.enableCodeMapping,
+            'uncheck to disable\nblock to text mapping features',
+            'check for block\nto text mapping features',
+            false
+        );
     }
-    addPreference(
-        'Clicking sound',
-        function () {
-            BlockMorph.prototype.toggleSnapSound();
-            if (BlockMorph.prototype.snapSound) {
-                myself.saveSetting('click', true);
-            } else {
-                myself.removeSetting('click');
-            }
-        },
-        BlockMorph.prototype.snapSound,
-        'uncheck to turn\nblock clicking\nsound off',
-        'check to turn\nblock clicking\nsound on'
-    );
-    addPreference(
-        'Animations',
-        function () {myself.isAnimating = !myself.isAnimating; },
-        myself.isAnimating,
-        'uncheck to disable\nIDE animations',
-        'check to enable\nIDE animations',
-        true
-    );
-    addPreference(
-        'Turbo mode',
-        'toggleFastTracking',
-        this.stage.isFastTracked,
-        'uncheck to run scripts\nat normal speed',
-        'check to prioritize\nscript execution'
-    );
-    addPreference(
-        'Rasterize SVGs',
-        function () {
-            MorphicPreferences.rasterizeSVGs =
-                !MorphicPreferences.rasterizeSVGs;
-        },
-        MorphicPreferences.rasterizeSVGs,
-        'uncheck for smooth\nscaling of vector costumes',
-        'check to rasterize\nSVGs on import',
-        true
-    );
-    addPreference(
-        'Flat design',
-        function () {
-            if (MorphicPreferences.isFlat) {
-                return myself.defaultDesign();
-            }
-            myself.flatDesign();
-        },
-        MorphicPreferences.isFlat,
-        'uncheck for default\nGUI design',
-        'check for alternative\nGUI design',
-        false
-    );
-    addPreference(
-        'Sprite Nesting',
-        function () {
-            SpriteMorph.prototype.enableNesting =
-                !SpriteMorph.prototype.enableNesting;
-        },
-        SpriteMorph.prototype.enableNesting,
-        'uncheck to disable\nsprite composition',
-        'check to enable\nsprite composition',
-        true
-    );
-    menu.addLine(); // everything below this line is stored in the project
-    addPreference(
-        'Thread safe scripts',
-        function () {stage.isThreadSafe = !stage.isThreadSafe; },
-        this.stage.isThreadSafe,
-        'uncheck to allow\nscript reentrance',
-        'check to disallow\nscript reentrance'
-    );
-    addPreference(
-        'Prefer smooth animations',
-        'toggleVariableFrameRate',
-        StageMorph.prototype.frameRate,
-        'uncheck for greater speed\nat variable frame rates',
-        'check for smooth, predictable\nanimations across computers'
-    );
-    addPreference(
-        'Flat line ends',
-        function () {
-            SpriteMorph.prototype.useFlatLineEnds =
-                !SpriteMorph.prototype.useFlatLineEnds;
-        },
-        SpriteMorph.prototype.useFlatLineEnds,
-        'uncheck for round ends of lines',
-        'check for flat ends of lines'
-    );
-    addPreference(
-        'Codification support',
-        function () {
-            StageMorph.prototype.enableCodeMapping =
-                !StageMorph.prototype.enableCodeMapping;
-            myself.currentSprite.blocksCache.variables = null;
-            myself.currentSprite.paletteCache.variables = null;
-            myself.refreshPalette();
-        },
-        StageMorph.prototype.enableCodeMapping,
-        'uncheck to disable\nblock to text mapping features',
-        'check for block\nto text mapping features',
-        false
-    );
     menu.popup(world, pos);
 };
 
@@ -2216,6 +2251,15 @@ IDE_Morph.prototype.missionMenu = function () {
     if (document.location.pathname.split('/')[1] != "projects") {
         menu.addItem(localize('Description'), 'descriptionMission');
     }
+    var listContains = function (list, obj){
+        var bool = false
+        list.forEach(function (e){
+            bool = bool || e == obj
+        })
+        return bool
+    }
+    if (world.role === "TEACHER" && listContains(window.location.href.split("/"),"programs")) menu.addItem(localize('mission is solved'), 'sendMissionSolved');
+    if (world.role === "TEACHER" && listContains(window.location.href.split("/"),"programs")) menu.addItem(localize('mission is corrected'), 'sendMissionCorrected');
     menu.addItem(localize('Save project on server'),
         function () {
             if (myself.projectName && myself.projectName != "Untitled") {
@@ -2229,10 +2273,10 @@ IDE_Morph.prototype.missionMenu = function () {
     )
     if (document.location.pathname.split('/')[1] != "projects") {
         menu.addItem(
-            localize('All missions list'), function() {
-                myself.allExerciceList('missions');
+            localize('All courses list'), function() {
+                myself.goToURL('/courses');
             },
-            localize('Redirection on the list of all missions')
+            localize('Redirection on the list of all courses')
         )
         menu.addItem(
             localize('Reset the mission'), 'resetMission',
@@ -2241,7 +2285,7 @@ IDE_Morph.prototype.missionMenu = function () {
     } else {
         menu.addItem(
             localize('All Projects list'), function() {
-                myself.allExerciceList('projects');
+                myself.goToURL('/projects');
             },
             localize('Redirection on the list of all projects')
         )
@@ -2495,7 +2539,11 @@ IDE_Morph.prototype.descriptionMission = function () {
     jQuery("#missionModal").modal('toggle')
 };
 
-IDE_Morph.prototype.allExerciceList = function (exercice) {
+IDE_Morph.prototype.goalMission = function () {
+    if (world.role == "STUDENT") jQuery("#goalModal").modal('toggle')
+};
+
+IDE_Morph.prototype.goToURL = function (exercice) {
     var dialog = new DialogBoxMorph().withKey('Sauvegarde'),
         myself = this,
         world = this.world(),
@@ -2513,12 +2561,12 @@ IDE_Morph.prototype.allExerciceList = function (exercice) {
                     myself.exportProjectToServer(name);
                 }, null, 'exportProject');
             }
-            window.location.href = window.location.protocol+'//'+window.location.host+'/'+exercice;
+            window.location.href = window.location.protocol+'//'+window.location.host+exercice;
         },
         localize('Yes'));
     dialog.addButton(
         function(){
-            window.location.href = window.location.protocol+'//'+window.location.host+'/'+exercice;
+            window.location.href = window.location.protocol+'//'+window.location.host+exercice;
         },
         localize('non'));
     btn1 = dialog.buttons.children[0];
@@ -2847,7 +2895,7 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
                 window.open('data:text/'
                     + (plain ? 'plain,' + str : 'xml,' + str));
                 menu.destroy();
-                this.showMessage('Exported!', 1);
+                this.showMessage(localize('Exported!'), 1);
             } catch (err) {
                 this.showMessage('Export failed: ' + err);
             }
@@ -2860,11 +2908,11 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
             window.open('data:text/'
                 + (plain ? 'plain,' + str : 'xml,' + str));
             menu.destroy();
-            this.showMessage('Exported!', 1);
+            this.showMessage(localize('Exported!'), 1);
         }
     }
 };
-IDE_Morph.prototype.exportProjectToServer = function (name) {
+IDE_Morph.prototype.exportProjectToServer = function (name, program_state) {
     var menu, str, jsonData, url;
 
     function putURL(url, jsondata, new_file) {
@@ -2907,7 +2955,10 @@ IDE_Morph.prototype.exportProjectToServer = function (name) {
             if (ressource[1] === "projects") {
                 jsonData = {project:{name: world.children[0].projectName, source_code: str }};
             } else {
-                jsonData = {program:{source_code: str }};
+                if(program_state)
+                    jsonData = {program:{source_code: str, state: program_state}};
+                else
+                    jsonData = {program:{source_code: str}};
             }
             putURL(url, jsonData, false);
         }
@@ -3315,6 +3366,8 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         this.palette,
         this.categories
     ];
+    var controlBar = this.controlBar;
+    var corralBar = this.corralBar;
 
     this.isAppMode = isNil(appMode) ? !this.isAppMode : appMode;
 
@@ -3335,7 +3388,17 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         this.setColor(this.backgroundColor);
         this.controlBar.setColor(this.frameColor);
         elements.forEach(function (e) {
-            e.show();
+            if(world.role == "STUDENT"){
+                if (e != controlBar.projectButton && 
+                    e != controlBar.settingsButton && 
+                    e != controlBar.stageSizeButton &&
+                    e != corralBar)
+                {
+                    e.show();
+                }
+            }
+            else
+                e.show();
         });
         this.stage.setScale(1);
         // show all hidden dialogs
@@ -3429,8 +3492,8 @@ IDE_Morph.prototype.languageMenu = function () {
 
 IDE_Morph.prototype.setLanguage = function (lang, callback) {
     var translation = document.getElementById('language'),
-        src = window.getAsset('lang-' + lang + '.js'),
-        myself = this;
+    src = window.getAsset('lang-' + lang + '.js'),
+    myself = this;
     SnapTranslator.unload();
     if (translation) {
         document.head.removeChild(translation);
@@ -4075,6 +4138,28 @@ IDE_Morph.prototype.getURL = function (url) {
         return;
     }
 };
+
+IDE_Morph.prototype.missionSolved = function(){
+    this.sendMissionSolved();
+    this.goalMission();
+}
+
+
+
+IDE_Morph.prototype.sendMissionSolved = function (){
+    var world = this.world();
+    var state = 3;
+    if ( world.program_needs_check && !(world.role == "TEACHER"))
+        state = 1;
+
+
+    this.exportProjectToServer(false, state);
+}
+
+IDE_Morph.prototype.sendMissionCorrected = function (){
+
+    this.exportProjectToServer(false, 2);
+}
 
 // IDE_Morph user dialog shortcuts
 
@@ -5240,22 +5325,24 @@ SpriteIconMorph.prototype.userMenu = function () {
     }
     if (!(this.object instanceof SpriteMorph)) {return null; }
     menu.addItem("show", 'showSpriteOnStage');
-    menu.addItem("duplicate", 'duplicateSprite');
-    menu.addItem("delete", 'removeSprite');
-    menu.addLine();
-    if (this.object.anchor) {
-        menu.addItem(
-            localize('detach from') + ' ' + this.object.anchor.name,
-            function () {myself.object.detachFromAnchor(); }
-        );
-    }
-    if (this.object.parts.length) {
-        menu.addItem(
-            'detach all parts',
-            function () {myself.object.detachAllParts(); }
-        );
-    }
-    menu.addItem("export...", 'exportSprite');
+    if (world.role != "STUDENT"){
+	    menu.addItem("duplicate", 'duplicateSprite');
+	    menu.addItem("delete", 'removeSprite');
+	    menu.addLine();
+	    if (this.object.anchor) {
+	        menu.addItem(
+	            localize('detach from') + ' ' + this.object.anchor.name,
+	            function () {myself.object.detachFromAnchor(); }
+	        );
+	    }
+	    if (this.object.parts.length) {
+	        menu.addItem(
+	            'detach all parts',
+	            function () {myself.object.detachAllParts(); }
+	        );
+	    }
+	    menu.addItem("export...", 'exportSprite');
+	}
     return menu;
 };
 
